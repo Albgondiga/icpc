@@ -11,6 +11,7 @@ using namespace std;
 typedef long long ll;
 typedef pair<int, int> ii;
 typedef pair<string, int> si;
+typedef pair<ll,ll> pll;
 #define dforn(i, n) for (int i=n-1; i>=0; i--)
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
@@ -23,8 +24,28 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     ll N; cin>>N;
-    set<ll> distances;
+    set<ll> leftNodes;
+    //set<ll> rightNodes;
+    stack<ll> s;
+    vector<vector<bool>> m(2*N+1, vector<bool>(2*N+1, false));
     forn(i,N) {
         ll A,B; cin>>A>>B;
+        leftNodes.insert(min(A,B));
+        m[A][B] = true;
+        //rightNodes.insert(min(A,B));
     }
+    for(ll i = 1; i < 2*N; i++) {
+        if (leftNodes.find(i) != leftNodes.end()) {
+            s.push(i);
+        } else {
+            if (!s.empty()) {
+                if (m[s.top()][i] == false) {
+                    cout<<"Yes"<<"\n";
+                    return 0;
+                }
+                s.pop();
+            }
+        }  
+    }
+    cout<<"No"<<"\n";
 }
