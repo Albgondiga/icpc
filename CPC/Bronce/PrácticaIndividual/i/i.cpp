@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-using namespace std; 
+using namespace std;
 #define forr(i, a, b) for (int i=a; i<b; i++)
 #define forn(i, n) forr(i, 0, n)
 #define sz(c) ((int)c.size())
@@ -16,7 +16,7 @@ typedef pair<ll,ll> pll;
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
 
-#define debug 1
+#define debug 0
 #define ifd if (debug)
 
 int main() {
@@ -24,6 +24,7 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     ll N; cin>>N;
+    ifd cout<<"N="<<N<<"\n";
     set<ll> leftNodes;
     //set<ll> rightNodes;
     stack<ll> s;
@@ -31,10 +32,12 @@ int main() {
     forn(i,N) {
         ll A,B; cin>>A>>B;
         leftNodes.insert(min(A,B));
-        m[A][B] = true;
+        ifd cout<<min(A,B)<<" es un nodo izquierdo y va hasta "
+            <<max(A,B)<<"\n";
+        m[min(A,B)][max(A,B)] = true;
         //rightNodes.insert(min(A,B));
     }
-    for(ll i = 1; i < 2*N; i++) {
+    for(ll i = 1; i <= 2*N; i++) {
         if (leftNodes.find(i) != leftNodes.end()) {
             s.push(i);
         } else {
@@ -48,4 +51,5 @@ int main() {
         }  
     }
     cout<<"No"<<"\n";
+    return 0;
 }
