@@ -26,23 +26,24 @@ int main() {
     ll N; cin>>N;
     ifd cout<<"N="<<N<<"\n";
     set<ll> leftNodes;
-    //set<ll> rightNodes;
     stack<ll> s;
-    vector<vector<bool>> m(2*N+1, vector<bool>(2*N+1, false));
+    //vector<vector<bool>> m(2*N+1, vector<bool>(2*N+1, false));
+    map<ll,ll> m;
     forn(i,N) {
         ll A,B; cin>>A>>B;
         leftNodes.insert(min(A,B));
         ifd cout<<min(A,B)<<" es un nodo izquierdo y va hasta "
             <<max(A,B)<<"\n";
-        m[min(A,B)][max(A,B)] = true;
-        //rightNodes.insert(min(A,B));
+        //m[min(A,B)][max(A,B)] = true;
+        m[min(A,B)] = max(A,B);
     }
     for(ll i = 1; i <= 2*N; i++) {
         if (leftNodes.find(i) != leftNodes.end()) {
             s.push(i);
         } else {
             if (!s.empty()) {
-                if (m[s.top()][i] == false) {
+                // if (m[s.top()][i] == false)
+                if (m.at(s.top()) != i) {
                     cout<<"Yes"<<"\n";
                     return 0;
                 }
