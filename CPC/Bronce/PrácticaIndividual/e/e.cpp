@@ -18,7 +18,7 @@ typedef pair<ll,ll> pll;
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
 
-#define debug 1
+#define debug 0
 #define ifd if (debug)
 
 int main() {
@@ -59,7 +59,6 @@ int main() {
                     }
                 }
             }
-            cout<<"i="<<i<<endl;
             cout<<result<<"\n";
         }
     }
