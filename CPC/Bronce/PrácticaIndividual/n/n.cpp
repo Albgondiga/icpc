@@ -11,6 +11,7 @@ using namespace std;
 typedef long long ll;
 typedef pair<int, int> ii;
 typedef pair<string, int> si;
+typedef pair<ll,ll> pll;
 #define dforn(i, n) for (int i=n-1; i>=0; i--)
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
@@ -23,20 +24,22 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     ll n, x; cin>>n>>x;
-    vector<ll> a(n), b(n);
-    forn(i,n) cin >> a[i], b[i] = a[i];
+    vector<pll> a(n);
+    forn(i,n) {
+        ll v; cin>>v;
+        a[i] = make_pair(v,i+1);
+    }
+    sort(a.begin(),a.end());
 
-    sort(b.begin(),b.end());
     ll i = 0;
     ll j = n-1;
-    while (i <= j) {
-        if (b[j] == x-b[i]) {
-            ifd cout<<b[i]<<"+"<<b[j]<<"\n";
-            cout<<find(a.begin(),a.end(),b[i])-a.begin()+1
-            <<" "<<find(a.begin(),a.end(),b[j])-a.begin()+1<<"\n";
+    while (i < j) {
+        if (a[j].first == x-a[i].first) {
+            //ifd cout<<a[i].second<<"+"<<a[j].second<<"\n";
+            cout<<a[i].second<<" "<<a[j].second<<"\n";
             return 0;
         } else {
-            if (b[j] > x-b[i]) {
+            if (a[j].first > x-a[i].first) {
                 j--;
             } else {
                 i++;
