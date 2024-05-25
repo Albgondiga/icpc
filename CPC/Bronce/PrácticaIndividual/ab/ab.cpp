@@ -18,9 +18,20 @@ const int MAXN=100100;
 #define debug 1
 #define ifd if (debug)
 
+ll mcd(ll a, ll b) {
+    if (b == 0)
+        return a;
+    else
+        return mcd(b, a%b);
+}
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-
+    ll t; cin>>t;
+    forn(i,t) {
+        ll n,m; cin>>n>>m;
+        
+    }
 }
