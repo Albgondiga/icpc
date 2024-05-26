@@ -19,42 +19,36 @@ const int MAXN=100100;
 #define debug 1
 #define ifd if (debug)
 
-ll binpow(ll a, ll b, ll m) {
-    if (b == 0) return 1;
-    if (b % 2) return binpow(a,b-1,m) * a % m;
-    ll res = binpow(a,b/2,m);
-    return res * res % m;
-}
 
-ll primeFactorsMCD(ll n, ll p)  {
-    ll mcd = 1;
-    ll count = 0;
-    bool d = false;
-    while (p % 2 == 0) { 
-        count++;
-        d = true;
-        p = p/2; 
-    } 
-    if (d) mcd *= binpow(2,count/n,100000007);
-    for (ll d = 3; d <= sqrt(p); d+=2) { 
-        count = 0;
-        d = false;
-        while (p % d == 0) {
-            count++;
-            d = true;
-            p = p/d; 
-        }
-        if (d) mcd *= binpow(d,count/n,100000007);
-    } 
-    // if (p > 1) 
-    //     mcd *= binpow(n,count/n,100000007);
-    return mcd;
-} 
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
     ll N, P; cin>>N>>P;
-    cout<<primeFactorsMCD(N,P)<<endl;
+
+    // Misma idea pero se hacia rapido con este
+    // mapa (contar exponente de cada factor primo)
+    // y repartirlo
+    map<ll,ll> count;
+
+    for (ll d = 2; d*d <= P; d++) {
+        while (P % d == 0) {
+            P /= d;
+            count[d]++;
+        }
+    }
+
+    if(P > 1) count[P]++;
+
+    // No hacia falta binpow
+    ll mcd = 1;
+    for(auto i:count) {
+        ll exp = i.second/N;
+        forn(k,exp)
+            mcd *= i.first;
+    }
+
+    cout<<mcd<<endl;
+    return 0;
 }
