@@ -18,34 +18,21 @@ const int MAXN=100100;
 #define debug 1
 #define ifd if (debug)
 
-vector<ll> sieve(ll n) {
-    vector<bool> prime(n+1,true);
-    prime[0]=prime[1]=false;
-    for (ll i = 2; i*i <= n; i++) {
-        if (prime[i]) {
-            for (ll j=i*i; j <= n; j+=i)
-                prime[j]=false;
-        }
-    }
-    vector<ll> primes;
-    for (ll i = 2; i*i <= n; i++) {
-        if (prime[i]) primes.push_back(i);
-    }
-    return primes;
-}
-
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
     ll n; cin>>n;
-
-    vector<ll> primes = sieve(n);
-    for (ll i = 0; i < primes.size(); i++) {
-        bool d = false;
-        while (n % primes[i] == 0) {
-            d = true;
-            n/=primes[i];
+    // Cuando se divide n no se consideran todos los multiplos de primos
+    // => no hace falta criba
+    for(ll i = 2; i*i <= n; i++) {
+        if (n % i == 0) {
+            cout<<i<<"\n";
+            while (n % i == 0) {
+                n /= i;
+            }
         }
-        if (d) cout<<primes[i]<<"\n";
     }
+    if (n > 1)
+        cout<<n<<"\n";
+    return 0;
 }
