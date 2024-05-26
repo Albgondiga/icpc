@@ -18,9 +18,35 @@ const int MAXN=100100;
 #define debug 1
 #define ifd if (debug)
 
+ll Bloque(ll x, ll y, ll si, ll se) {
+    if (x == 1) // Interno
+        return (y-1)/si;  // Bloque dado por parte entera de division
+    return  (y-1)/se; // Externo
+}
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
+    ll n,m,q; cin>>n>>m>>q;
 
+    ll mcd = __gcd(n,m);
+    ll si = n/mcd;  // Secciones internas
+    ll se = m/mcd;  // Secciones externas
+
+    // Bloques separados por muros dobles
+    // Puedo ir de una seccion a otra solo si estan
+    // en el mismo bloque
+
+    forn(i,q) {
+        ll sx,sy,ex,ey;
+        cin>>sx>>sy>>ex>>ey;
+        if (Bloque(sx,sy,si,se) == Bloque(ex,ey,si,se)) {
+            cout<<"YES\n";
+        } else {
+            cout<<"NO\n";
+        }
+    }
+
+    return 0;
 }
