@@ -30,23 +30,30 @@ int main() {
     forn(i,n) cin>>a[i];
     sort(a.begin(),a.end());
 
-    ll original = a[n/2];
-    ll maxMedian = original+k;
-    while (maxMedian > original) {
+    ll first = a[n/2]; ll last = a[n/2]+k;
+    ll maxMedian = 0;
+    // Busqueda binaria en lugar de contar todos
+    // por fuerza bruta
+    while (first <= last) {
+        maxMedian = (first+last)/2;
+        ifd cout<<"maxMedian = "<<maxMedian<<endl; 
+
         ll op = 0;
-        bool isMax = true;
-        for(ll i = n/2; i < n && isMax; i++) {
+        for(ll i = n/2; i < n; i++) {
             if (maxMedian-a[i] > 0) {
                 op += maxMedian-a[i];
                 if (op > k)
-                    isMax = false;
+                    break;
             }
         }
-        ifd cout<<"m = "<<maxMedian<<", ";
-        ifd cout<<"op = "<<op<<endl;
-        if (isMax)
-            break;
-        maxMedian--;
+
+        if (op <= k) {
+            first = maxMedian+1;
+        } else {
+            last = maxMedian-1;
+        }
     }
-    cout<<maxMedian<<"\n";
+
+    cout<<first-1<<"\n";
+    return 0;
 }
