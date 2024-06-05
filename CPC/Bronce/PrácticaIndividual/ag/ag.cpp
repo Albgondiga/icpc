@@ -18,10 +18,10 @@ typedef pair<ll,ll> pll;
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
 
-#define debug 1
+#define debug 0
 #define ifd if (debug)
 
-const int MAX = 1e5 + 5;
+const int MAX = 1e6 + 5;
 
 int main() {
     cin.tie(0);
@@ -34,6 +34,17 @@ int main() {
         ll x; cin >> x;
         ady[x].push_back(i+1);
     }
+    ifd {
+        forn(i,MAX) {
+            cout<<i<<": ";
+            forn(j,ady[i].size()) {
+                cout<<ady[i][j]<<" ";
+            }
+            cout<<"\n";
+        }
+        cout<<"\n";
+    }
+
     forn(i,m) {
         ll k, v; cin>>k>>v;
         if (ady[v].size() >= k) {
