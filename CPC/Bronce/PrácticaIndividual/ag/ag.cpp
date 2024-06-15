@@ -18,7 +18,7 @@ typedef pair<ll,ll> pll;
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
 
-#define debug 0
+#define debug 1
 #define ifd if (debug)
 
 const int MAX = 1e6 + 5;
@@ -27,30 +27,23 @@ int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    ll n, m; cin>>n>>m;
-    vector<vector<ll>> ady(MAX);
-    set<ll> nodes;
-    forn(i,n) {
-        ll x; cin >> x;
-        ady[x].push_back(i+1);
-    }
-    ifd {
-        forn(i,MAX) {
-            cout<<i<<": ";
-            forn(j,ady[i].size()) {
-                cout<<ady[i][j]<<" ";
+    ll n, m;
+    while (cin>>n>>m) {
+        vector<vector<ll>> ady(MAX);
+        set<ll> nodes;
+        forn(i,n) {
+            ll x; cin>>x;
+            ady[x].push_back(i+1);
+        }
+        ll k, v;
+        forn(i,m) {
+            ll k, v; cin>>k>>v;
+            if (ady[v].size() >= k) {
+                cout<<ady[v][k-1]<<"\n";
+            } else {
+                cout<<0<<"\n";
             }
-            cout<<"\n";
         }
-        cout<<"\n";
-    }
-
-    forn(i,m) {
-        ll k, v; cin>>k>>v;
-        if (ady[v].size() >= k) {
-            cout<<ady[v][k-1]<<"\n";
-        } else {
-            cout<<0<<"\n";
-        }
-    }
+    } 
+    return 0;
 }
