@@ -26,33 +26,55 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     ll n, m; cin>>n>>m;
-    vector<ll> v(n);
-    map<ll,ll> index;
-    forn(i,n) {
-        cin>>v[i];
-        index[v[i]] = i;
-    }
+    vector<ll> v(n+1);
+    forn(i,n) cin>>v[i+1];
 
+    // Vector de posisiones
+    vector<int> index(n+1);
+    forn(i,n) index[v[i+1]] = i+1;
+    // Rondas inciales
     ll count = 1;
     for (ll i = 1; i < n; i++) {
         if (index[i+1] < index[i]) {
             count++;
         }
     }
-    ifd cout<<"count="<<count<<endl;
-    forn(i,m) {
+
+    set<pll> swaps;
+
+    forn(k,m) {
         ll a,b; cin>>a>>b;
-        index[v[a-1]] = b-1;
-        index[v[b-1]] = a-1;
-        swap(v[a-1],v[b-1]);
-        if (v[b-1] > v[a-1]) {
-            ifd cout<<v[b-1]<<" es mayor que "<<v[a-1]<<endl;
-            count--;
-        } else {
-            ifd cout<<v[b-1]<<" es menor que "<<v[a-1]<<endl;
-            count++;
+
+        // Revisar consecutivos
+        if (v[a]+1 <= n)
+            swaps.insert( {v[a],v[a]+1} );
+        if (v[a]-1 >= 1)
+            swaps.insert( {v[a]-1,v[a]} );
+    
+        if (v[b]+1 <= n)
+            swaps.insert( {v[b],v[b]+1} );
+        if (v[b]-1 >= 1)
+            swaps.insert( {v[b]-1,v[b]} );
+
+        for (auto swapped : swaps) {
+            if (index[swapped.first] > index[swapped.second]) {
+                count--;  // Si estaba despues, ahora va antes
+            }
         }
+    
+        swap(v[a], v[b]);
+        index[v[a]] = a;
+        index[v[b]] = b;
+
+        for (auto swapped : swaps) {
+            if (index[swapped.first] > index[swapped.second]) {
+                count++;
+            }
+        }
+
         cout<<count<<"\n";
+        swaps.clear();
     }
+
     return 0;
 }
