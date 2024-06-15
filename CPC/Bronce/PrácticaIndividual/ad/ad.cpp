@@ -30,12 +30,11 @@ int main() {
     freopen("planting.in", "r", stdin);
     freopen("planting.out", "w", stdout);
     
-    int n, cant_ady[MAX]; 
+    int n, cant_ady[MAX] = { 0 }; 
     cin >> n;
 
     for (int i = 1; i < n; i++) {
-        int x, y;
-        cin >> x >> y;
+        int x, y; cin >> x >> y;
         cant_ady[x]++;
         cant_ady[y]++;
     }
