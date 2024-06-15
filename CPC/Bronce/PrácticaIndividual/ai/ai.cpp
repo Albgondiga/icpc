@@ -46,12 +46,13 @@ int32_t main() {
     for (int color = 1; color <= 4; color++) {
       bool flag = true;  // si se puede usar color actual
       for (int i = 0; i < m; i++) {
+        // Como estan ordenados, .first ya fue pintado
         if (E[i].second == v) {
           if (C[E[i].first] == color)
             flag = false;  // v ya tiene adyacente con ese color
         }
       }
-      
+
       if (flag) {
         C[v] = color;
         break;
