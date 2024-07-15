@@ -24,17 +24,18 @@ const int MAXN=100100;
 const ll INF = 1e9;
 const ll MOD = 1e9+7;
 const ll mxX = 1e6+5;
-ll ways[mxX]; 
+ll value[mxX]; 
 ll ready[mxX];
+vector<ll> coins;
 
 // Iterativo
 void solveI(ll n) {
-    ways[0] = 1;
+    value[0] = 0;
     for (ll x = 1; x <= n; x++) {
-        for (ll d = 1; d <= 6; d++) {
-            if (x-d >= 0) {
-                ways[x] += ways[x-d];
-                ways[x] %= MOD;
+        value[x] = INF;
+        for (auto c : coins) {
+            if (x-c >= 0) {
+                value[x] = min(value[x], value[x-c]+1);
             }
         }
     }
@@ -42,21 +43,18 @@ void solveI(ll n) {
 
 // Recursivo
 ll solveR(ll x) {
-    if (x < 0) return 0;
-    if (x == 0) return 1;
-    if (ready[x]) return ways[x];
+    if (x < 0) return INF;
+    if (x == 0) return 0;
+    if (ready[x]) return value[x];
 
-    ll res = 0;
-    for (ll d = 1; d <= 6; d++) {
-        if (x-d >= 0) {
-            res += solveR(x-d);
-            res %= MOD;
-        }
+    ll best = INF;
+    for (auto c : coins) {
+        best = min(best, solveR(x-c)+1);
     }
 
     ready[x] = 1;
-    ways[x] = res;
-    return ways[x];
+    value[x] = best;
+    return value[x];
 }
 
 int main() {
@@ -65,8 +63,17 @@ int main() {
     
     memset(ready, 0, sizeof(ready));
 
-    ll n; cin >> n;
-    //solveI(n);
-    solveR(n);
-    cout<<ways[n]<<"\n";
+    ll n; cin>>n;
+    ll x; cin>>x;
+    coins.resize(n);
+    forn (i, n) cin>>coins[i];
+
+    //solveI(x);
+    solveR(x);
+    if (value[x] >= INF) {
+        cout<<-1<<"\n";
+    } else {
+        cout<<value[x]<<"\n";
+    }
+    return 0;
 }

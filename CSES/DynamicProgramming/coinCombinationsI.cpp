@@ -17,56 +17,43 @@ typedef pair<ll,ll> pll;
 #define dforn(i, n) for (int i=n-1; i>=0; i--)
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
-
+ 
 #define debug 1
 #define ifd if (debug)
-
+ 
 const ll INF = 1e9;
 const ll MOD = 1e9+7;
 const ll mxX = 1e6+5;
-ll ways[mxX]; 
+ll value[mxX]; 
 ll ready[mxX];
-
+vector<ll> coins;
+ 
 // Iterativo
-void solveI(ll n) {
-    ways[0] = 1;
+void solve(ll n) {
+    value[0] = 1;
     for (ll x = 1; x <= n; x++) {
-        for (ll d = 1; d <= 6; d++) {
-            if (x-d >= 0) {
-                ways[x] += ways[x-d];
-                ways[x] %= MOD;
+        for (auto c : coins) {
+            if (x-c >= 0) {
+                value[x] += value[x-c];
+                value[x] %= MOD;
             }
         }
     }
 }
-
-// Recursivo
-ll solveR(ll x) {
-    if (x < 0) return 0;
-    if (x == 0) return 1;
-    if (ready[x]) return ways[x];
-
-    ll res = 0;
-    for (ll d = 1; d <= 6; d++) {
-        if (x-d >= 0) {
-            res += solveR(x-d);
-            res %= MOD;
-        }
-    }
-
-    ready[x] = 1;
-    ways[x] = res;
-    return ways[x];
-}
-
+ 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
     
     memset(ready, 0, sizeof(ready));
-
-    ll n; cin >> n;
-    //solveI(n);
-    solveR(n);
-    cout<<ways[n]<<"\n";
+ 
+    ll n; cin>>n;
+    ll x; cin>>x;
+    coins.resize(n);
+    forn (i, n) cin>>coins[i];
+ 
+    solve(x);
+    cout<<value[x]<<"\n";
+ 
+    return 0;
 }
