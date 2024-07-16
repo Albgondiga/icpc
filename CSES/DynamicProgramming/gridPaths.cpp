@@ -23,34 +23,48 @@ const int MAXN=100100;
  
 const ll INF = 1e9;
 const ll MOD = 1e9+7;
-const ll mxX = 1e6+5;
-ll value[mxX]; 
-vector<ll> coins;
+const ll MAX = 1e3+5;
+ll value[MAX][MAX]; 
+bool blocked[MAX][MAX]; 
  
-// Iterativo
 void solve(ll n) {
-    value[0] = 1;
-    for (auto c : coins) {
-        for (ll x = 1; x <= n; x++) {
-            if (x-c >= 0) {
-                value[x] += value[x-c];
-                value[x] %= MOD;
+    // for (ll i = 1; i <= n; i++) {
+    //     value[0][i] = 1;
+    //     value[i][0] = 1;
+    // }
+    value[1][1] = 1;
+    for (ll i = 1; i <= n; i++) {
+        for (ll j = 1; j <= n; j++) {
+            if (!blocked[i][j]) {
+                value[i][j] += value[i][j-1];
+                value[i][j] += value[i-1][j];
+                value[i][j] %= MOD;
             }
         }
     }
 }
-
+ 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
-
+ 
     ll n; cin>>n;
-    ll x; cin>>x;
-    coins.resize(n);
-    forn (i, n) cin>>coins[i];
- 
-    solve(x);
-    cout<<value[x]<<"\n";
- 
+    for (ll i = 1; i <= n; i++) {
+        for (ll j = 1; j <= n; j++) {
+            char c; cin>>c;
+            if (c == '*')
+                blocked[i][j] = 1;
+            else
+                blocked[i][j] = 0;
+        }
+    }
+
+    if (blocked[1][1]) {
+        cout<<0<<"\n";
+    } else {
+        solve(n);
+        cout<<value[n][n]<<"\n";
+    }
+
     return 0;
 }

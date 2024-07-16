@@ -17,25 +17,28 @@ typedef pair<ll,ll> pll;
 #define dforn(i, n) for (int i=n-1; i>=0; i--)
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
- 
+
 #define debug 1
 #define ifd if (debug)
- 
-const ll INF = 1e9;
-const ll MOD = 1e9+7;
+
 const ll mxX = 1e6+5;
-ll value[mxX]; 
-vector<ll> coins;
- 
-// Iterativo
+const ll INF = 1e9+5;
+const ll MINUS_INF = -1*INF;
+ll value[mxX];  // Maximo numero de paginas para cada precio
+ll ready[mxX];
+vector<ll> prices;
+vector<ll> pages;
+ll N, X;
+
+// Knapsack
 void solve(ll n) {
-    value[0] = 1;
-    for (auto c : coins) {
-        for (ll x = 1; x <= n; x++) {
-            if (x-c >= 0) {
-                value[x] += value[x-c];
-                value[x] %= MOD;
-            }
+    value[0] = 0;
+    for (int b = 0; b < N; b++) {
+        for(ll x = n; x >= 0; x--) {
+            if (x - prices[b] >= 0) {
+                // if (possible[x]) possible[x+w[k]]
+                value[x] = max(value[x], value[x-prices[b]]+pages[b]);
+            }   
         }
     }
 }
@@ -44,13 +47,16 @@ int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    ll n; cin>>n;
-    ll x; cin>>x;
-    coins.resize(n);
-    forn (i, n) cin>>coins[i];
- 
-    solve(x);
-    cout<<value[x]<<"\n";
- 
+    memset(ready, 0, sizeof(ready));
+    
+    cin>>N>>X;
+    prices.resize(N);
+    pages.resize(N);
+    forn(i,N) cin>>prices[i];
+    forn(i,N) cin>>pages[i];
+
+    solve(X);
+    cout<<value[X]<<"\n";
+
     return 0;
 }
