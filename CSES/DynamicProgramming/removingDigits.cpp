@@ -17,40 +17,34 @@ typedef pair<ll,ll> pll;
 #define dforn(i, n) for (int i=n-1; i>=0; i--)
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
- 
+
 #define debug 1
 #define ifd if (debug)
- 
+
 const ll INF = 1e9;
 const ll MOD = 1e9+7;
 const ll mxX = 1e6+5;
 ll value[mxX]; 
-vector<ll> coins;
- 
+
 // Iterativo
 void solve(ll n) {
-    value[0] = 1;
+    value[0] = 0;
     for (ll x = 1; x <= n; x++) {
-        for (auto c : coins) {
-            if (x-c >= 0) {
-                value[x] += value[x-c];
-                value[x] %= MOD;
-            }
+        value[x] = INF;
+        ll number = x;
+        while (number) {
+            ll d = number % 10;
+            value[x] = min(value[x], value[x-d]+1);
+            number /= 10;
         }
     }
 }
- 
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
- 
-    ll n; cin>>n;
-    ll x; cin>>x;
-    coins.resize(n);
-    forn (i, n) cin>>coins[i];
- 
-    solve(x);
-    cout<<value[x]<<"\n";
- 
-    return 0;
+
+    ll n; cin >> n;
+    solve(n);
+    cout<<value[n]<<"\n";
 }
