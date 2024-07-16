@@ -21,50 +21,43 @@ const int MAXN=100100;
 #define debug 0
 #define ifd if (debug)
 
-ll n, m, a, b, c;
-string s, t;
+const int MAX = 5000+5;
+string s1, s2;
+int dp[MAX][MAX];
 
-const int MAX = 2*1e3+5;
-ll dp[MAX][MAX];
 
-ll cost(int i, int j) {
-    if (s[i]==t[j]) return 0;
-    return min(c, a+b);
-}
-
-ll fR(int n, int m) {
-    if (n == 0) return m*a;
-    if (m == 0) return n*b;
+int fR(int n, int m) {
+    if (n == 0) return m;
+    if (m == 0) return n;
 
     if (dp[n][m] == -1) {
-        dp[n][m] = min( fR(n-1,m-1)+cost(n-1,m-1), ll(min( fR(n-1,m)+b, fR(n,m-1)+a )));
+        dp[n][m] = min( fR(n-1,m-1) + (s1[n-1]==s2[m-1]? 0:1), min( fR(n-1,m)+1, fR(n,m-1)+1 ));
     }
     return dp[n][m];
 }
 
-ll fI(int n, int m) {
+int fI(int n, int m) {
     for (int i = 0; i <= n; i++) {
         for (int j = 0; j <= m; j++) {
-            if (i == 0) dp[i][j] = j*a;
-            else if (j == 0) dp[i][j] = i*b;
-            else dp[i][j] = min( dp[i-1][j-1]+cost(i-1,j-1), min( dp[i-1][j]+b, dp[i][j-1]+a ));
+            if (i == 0) dp[i][j] = j;
+            else if (j == 0) dp[i][j] = i;
+            else dp[i][j] = min( dp[i-1][j-1]+(s1[i-1]==s2[j-1]? 0:1), min( dp[i-1][j]+1, dp[i][j-1]+1 ));
         }  
     }
     return dp[n][m];
 }
 
-
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    cin>>n>>m>>a>>b>>c;
-    cin>>s>>t;
+    cin>>s1>>s2;
+    int n = s1.length(), m = s2.length();   
 
-    forn(i,n+1) forn(j,m+1) dp[i][j] = -1;
+    forn(i,n+1) forn(j,m+1) dp[i][j] = -1; 
 
     cout<<fR(n,m)<<"\n";
     ifd forn(i,n+1) { forn(j,m+1) cout<<dp[i][j]<<" "; cout<<"\n"; } 
 
     return 0;
-}   
+}
