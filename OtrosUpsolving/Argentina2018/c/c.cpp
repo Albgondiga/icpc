@@ -21,24 +21,43 @@ const int MAXN=100100;
 #define debug 1
 #define ifd if (debug)
 
+ll digit(int x) {
+    if (x==1) return 4;
+    if (x==2) return 6;
+    switch ((x-2) % 8){
+        case 1:
+            return 2; 
+            break;
+        case 2:
+            return 4; 
+            break;
+        case 3:
+            return 8; 
+            break;
+        case 4:
+            return 3; 
+            break;
+        case 5:
+            return 2; 
+            break;
+        case 6:
+            return 6; 
+            break;
+        case 7:
+            return 1; 
+            break;
+        default:
+            return 2;
+            break;
+    }
+}
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    int N;
-    string s;
-    cin>>N>>s;
-
-    int p = 0, n = 0, i = 0;
-    for (auto c : s) {
-        if (c=='P') p++;
-        else if (c=='N') n++;
-        else i++;
-    }
-
-    if (p > n+i) cout<<"SI"<<"\n";
-    else if (n >= p+i) cout<<"NO"<<"\n";
-    else cout<<"INDECISOS\n";
-
+    ll x, y, z, w;
+    cin>>x>>y>>z>>w;
+    cout<<digit(x)<<digit(y)<<digit(z)<<digit(w)<<"\n";
     return 0;
 }

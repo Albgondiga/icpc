@@ -25,20 +25,9 @@ int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    int N;
-    string s;
-    cin>>N>>s;
+    int n, m; cin>>n>>m;
 
-    int p = 0, n = 0, i = 0;
-    for (auto c : s) {
-        if (c=='P') p++;
-        else if (c=='N') n++;
-        else i++;
-    }
-
-    if (p > n+i) cout<<"SI"<<"\n";
-    else if (n >= p+i) cout<<"NO"<<"\n";
-    else cout<<"INDECISOS\n";
+    
 
     return 0;
 }
