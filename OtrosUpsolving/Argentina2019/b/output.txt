@@ -1,0 +1,4 @@
+estoy fijándome en (1, 1, r=1) vs (2, 1, r=1)
+la distancia entre los centros es 1 y la distancia entre los radios es 4
+SE INTERSECAN!!
+NO

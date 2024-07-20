@@ -1,0 +1,19 @@
+leí 2, 5
+leí 1, 10
+saqué (1, 0, 2)
+es un open
+es cuadrado
+saqué (2, 0, 1)
+es un open
+es redondo
+saqué (5, 1, 1)
+es un close
+es redondomi open es 2
+caigo dentro de un paréntesis cuadrado
+el cuadrado más a la izq abre en 1
+cae fuera de mi redondo
+saqué (10, 1, 2)
+es un close
+es cuadrado
+mi open es 1
+3
