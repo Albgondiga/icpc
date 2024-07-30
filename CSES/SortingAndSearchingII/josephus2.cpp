@@ -27,9 +27,33 @@ const int MAXN=100100;
 #define debug 1
 #define ifd if (debug)
 
+#include <ext/pb_ds/assoc_container.hpp> 
+#include <ext/pb_ds/tree_policy.hpp> 
+using namespace __gnu_pbds; 
+  
+#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
+    ll n, k; cin>>n>>k;
 
+    ordered_set s; 
+    for (int i = 1; i<=n; i++) s.insert(i);
+    auto it = s.find(2);
+    if (it == s.end()){
+        cout<<"1\n";
+    } else {
+        ll pos = k;
+        while (s.size()) {
+            pos %= s.size();
+            auto it = s.find_by_order(pos);
+            cout<<*it<<" ";
+            s.erase(it); 
+            pos += k;
+        }
+    }
+
+    return 0;
 }
