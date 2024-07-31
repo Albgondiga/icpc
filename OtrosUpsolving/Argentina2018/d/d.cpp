@@ -25,9 +25,15 @@ int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
+    std::cout << std::fixed;
+    std::cout << std::setprecision(1);
+
     int n, m; cin>>n>>m;
 
-    
+    double pts = n*(n-1)/2;
+    double teampts = pts/n;
+    double ans = teampts + m*0.5;
+    cout<<ans<<"\n";
 
     return 0;
 }
