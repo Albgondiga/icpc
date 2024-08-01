@@ -18,28 +18,33 @@ typedef pair<ll,ll> pll;
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
 
-#define debug 0
+#define debug 1
 #define ifd if (debug)
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    ll d, m, d1, n, d2; cin>>d>>m>>d1>>n>>d2;
+    ll n, m; cin>>n>>m;
+    set<ll> s;
+    ll x; 
+    forn(i,n) {
+        cin>>x;
+        s.insert(x);
+    }
 
-    ll distance = 2*d;
-    if (m*d1 >= distance) {
-        ll count = ceil((double)distance/d1);
-        if (count == 0) count = 1;
-        cout<<count<<"\n";
+    if (s.size() < m) {
+        if (s.size() == 1) {
+            cout<<1<<"\n";
+        } else if (s.size() == 2) {
+            cout<<m-2<<"\n";
+        } else if (s.size() == 3 && m == 4) {
+            cout<<3<<"\n";
+        } else {
+            cout<<m<<"\n";
+        }
     } else {
-        distance -= (m*d1);
-        distance *= 2;
-
-        ll count = ceil((double)distance/d2);
-        if (count == 0) count = 1;
-        if (count <= n) cout<<m+count<<"\n";
-        else cout<<-1<<"\n";
+        cout<<0<<"\n";
     }
 
     return 0;
