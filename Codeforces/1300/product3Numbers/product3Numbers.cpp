@@ -24,35 +24,36 @@ using namespace __gnu_pbds;
   
 #define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
 
-#define debug 0
+#define debug 1
 #define ifd if (debug)
-
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    ll n, m; cin>>n>>m;
-    ll kmin = 0, kmax = 0;
-
-    if (n != 1) {
-        // Min
-        ll base = n/m;
-        ll mod = n%m;
-        ll equiposMas = (base+1)*(base)/2;
-        ll equiposMenos = (base)*(base-1)/2;
-        ifd {
-            cout<<"base = "<<base<<endl;
-            cout<<"mod = "<<mod<<endl;
-            cout<<"equiposMas = "<<equiposMas<<endl;
-            cout<<"equiposMenos = "<<equiposMenos<<endl;
+    int t; cin>>t;
+    ll n;
+    while(t--) {
+        cin>>n;
+        if (n < 24) cout<<"NO\n";
+        else {
+            bool possible = false;
+            for (ll a = 2; a * a <= n && !possible; a++) {
+                if (n % a == 0) {
+                    ll bc = n/a;
+                    for (ll b = a+1; b*b < bc; b++) {
+                        if (bc % b == 0) {
+                            ll c = bc/b;
+                            cout<<"YES\n"<<a<<" "<<b<<" "<<c<<"\n";
+                            possible = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!possible) cout<<"NO\n";
         }
-        kmin = (mod*equiposMas + (m-mod)*equiposMenos); 
-        // Max
-        kmax = (n-m+1)*(n-m)/2;
     }
-
-    cout<<kmin<<" "<<kmax<<"\n";
 
     return 0;
 }

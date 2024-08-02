@@ -24,35 +24,31 @@ using namespace __gnu_pbds;
   
 #define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
 
-#define debug 0
+#define debug 1
 #define ifd if (debug)
+
 
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    ll n, m; cin>>n>>m;
-    ll kmin = 0, kmax = 0;
-
-    if (n != 1) {
-        // Min
-        ll base = n/m;
-        ll mod = n%m;
-        ll equiposMas = (base+1)*(base)/2;
-        ll equiposMenos = (base)*(base-1)/2;
-        ifd {
-            cout<<"base = "<<base<<endl;
-            cout<<"mod = "<<mod<<endl;
-            cout<<"equiposMas = "<<equiposMas<<endl;
-            cout<<"equiposMenos = "<<equiposMenos<<endl;
+    int t; cin>>t;
+    ll n, k; 
+    while (t--) {
+        cin>>n>>k;
+        if (k >= n) cout<<1<<"\n";
+        else {
+            ll ans = 1e9+5;
+            for (ll packs = 1; packs*packs <= n; packs++) {
+                if (n % packs == 0) {
+                    if (n/packs <= k) ans = min(ans, packs);
+                    if (packs <= k) ans = min(ans, n/packs);
+                }
+            }
+            cout<<ans<<"\n";
         }
-        kmin = (mod*equiposMas + (m-mod)*equiposMenos); 
-        // Max
-        kmax = (n-m+1)*(n-m)/2;
     }
-
-    cout<<kmin<<" "<<kmax<<"\n";
 
     return 0;
 }
