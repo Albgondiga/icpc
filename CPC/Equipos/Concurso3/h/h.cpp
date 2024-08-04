@@ -73,11 +73,6 @@ int main() {
         mainTrie.insertar(s);
     }
 
-    ifd {
-        Trie* t = mainTrie.buscar("cosenzazin");
-        cout<<"Faltan "<<t->completar<<" para completar cosenzazin"<<endl;
-    }
-
     while (q--) {
         string s; cin>>s;
         Trie* wordTrie = mainTrie.buscar(s);
