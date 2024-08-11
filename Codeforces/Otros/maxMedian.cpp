@@ -27,11 +27,40 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
+ll n, k;
+vector<ll> a;
+
+bool check(ll m) {
+    ll count = 0;
+    for (ll i = n/2; i < n; i++) {
+        count += (m-a[i]);
+        if (count > k) return false;
+    }
+    return true;
+}
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
+    cin>>n>>k;
+    a.resize(n);
+    forn(i,n) cin>>a[i];
 
+    sort(a.begin(), a.end());
+
+    ll l = a[n/2], r = a[n-1]+k;
+    ll res = 0;
+    while (l <= r) {
+        ll m = l + (r-l)/2;
+        if (check(m)) {
+            l = m+1; res = m;
+        } else {
+            r = m-1;
+        }
+    }
+
+    cout<<res<<"\n";
 
     return 0;
 }

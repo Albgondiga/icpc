@@ -27,11 +27,35 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
+ll n, m, k; 
+
+bool check(ll mid) {
+    ll count = 0;
+    for (ll i = 1; i <= n; i++)  {
+        count += min(m, (mid-1)/i);
+        if (count >= k) return false;
+    }
+    return true;
+}
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
+    cin>>n>>m>>k;
 
+    ll l = 1, r = n*m;
+    ll res = 0;
+    while (l <= r) {
+        ll mid = l + (r-l)/2;
+        if (check(mid)) {
+            l = mid+1; res = mid;
+        } else {
+            r = mid-1;
+        }
+    }
+
+    cout<<res<<"\n";
 
     return 0;
 }
