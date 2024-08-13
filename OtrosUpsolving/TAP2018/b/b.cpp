@@ -26,21 +26,31 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     ll d, m, d1, n, d2; cin>>d>>m>>d1>>n>>d2;
-
-    ll distance = 2*d;
-    if (m*d1 >= distance) {
-        ll count = ceil((double)distance/d1);
-        if (count == 0) count = 1;
-        cout<<count<<"\n";
-    } else {
-        distance -= (m*d1);
-        distance *= 2;
-
-        ll count = ceil((double)distance/d2);
-        if (count == 0) count = 1;
-        if (count <= n) cout<<m+count<<"\n";
-        else cout<<-1<<"\n";
+    
+    ll dist = d;
+    ifd cout<<"dist = "<<dist<<endl;
+    ll pow = 2, count = 0;
+    while (m > 0 && dist > 0) {
+        if (d1 <= dist) break;
+        count++;
+        dist = pow*(d-d1)+d1;
+        ifd cout<<"count = "<<count<<", dist = "<<dist<<endl;
+        pow *= 2;
+        m--;
     }
+
+    pow = 2; d = dist;
+    while (n > 0 && dist > 0) {
+        if (d2 <= dist) break;
+        count++;
+        dist = pow*(d-d2)+d2;
+        ifd cout<<"count = "<<count<<", dist = "<<dist<<endl;
+        pow *= 2;
+        n--;
+    }
+
+    if (dist <= 0) cout<<count<<"\n";
+    else cout<<-1<<"\n";
 
     return 0;
 }
