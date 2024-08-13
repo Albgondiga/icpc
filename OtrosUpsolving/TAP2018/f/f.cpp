@@ -27,25 +27,37 @@ int main() {
 
     ll n, m; cin>>n>>m;
     set<ll> s;
-    ll x; 
+    vector<ll> freq(m+1);
+    ll x, repetidos = 0; 
     forn(i,n) {
         cin>>x;
         s.insert(x);
+        if (freq[x] == 1) repetidos++;
+        freq[x]++;
     }
 
     if (s.size() < m) {
-        if (s.size() == 1) {
-            cout<<1<<"\n";
-        } else if (s.size() == 2) {
-            cout<<m-2<<"\n";
-        } else if (s.size() == 3 && m == 4) {
-            cout<<3<<"\n";
-        } else {
+        if (s.size() >= 4) {
             cout<<m<<"\n";
+        } else {
+            if (s.size() == 3) {
+                if (m >= 5) {
+                    cout<<m<<"\n";
+                } else { // m == 4
+                    if (repetidos == 0) cout<<m-1<<"\n";
+                    else cout<<m<<"\n";
+                }
+            } else if (s.size() == 2) {
+                if (repetidos == 0) cout<<m-2<<"\n";
+                else if (repetidos == 1) cout<<m-1<<"\n";
+                else cout<<m<<"\n"; // repetidos == 2
+            } else { // s.size() == 1
+                cout<<1<<"\n";
+            }
         }
-    } else {
-        cout<<0<<"\n";
+    } else { // s.size() == m
+        if (m == 1) cout<<1<<"\n";
+        else cout<<0<<"\n";
     }
-
     return 0;
 }
