@@ -26,6 +26,8 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
+int n, m; cin>>n>>m;
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
