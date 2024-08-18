@@ -23,6 +23,8 @@ const int MAXN=100100;
 using namespace __gnu_pbds; 
   
 #define ordered_set tree<pll, null_type,less<pll>, rb_tree_tag,tree_order_statistics_node_update>
+// find_by_order(k): returns iterator to the kth element (counting from zero) in the set in O(logn) time.T o find the first element k must be zero.
+// order_of_key(k) : returns number of items that are strictly smaller than our item k in O(logn) time
 
 #define debug 0
 #define ifd if (debug)
