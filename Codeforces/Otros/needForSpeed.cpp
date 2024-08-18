@@ -55,7 +55,7 @@ int main() {
         cin>>d[i]>>s[i];
     }
     // si+c >= 0 => c >= -si
-    double l = -1*(*min_element(s.begin(), s.end())), r = 1e9;
+    double l = -1*(*min_element(s.begin(), s.end())), r = 1e6+1000;
     double c = 0;
     while (abs(r-l) > ERR) {
         ifd cout<<"l = "<<l<<", r = "<<r<<endl;
@@ -68,7 +68,7 @@ int main() {
             r = c;
         }
     }
-    cout<<c<<"\n";
+    cout<<setprecision(6)<<fixed<<c<<"\n";
 
     return 0;
 }
