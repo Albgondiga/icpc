@@ -17,63 +17,76 @@ const int MAXN=100100;
 const int sz=10000007;
 // const int sz =100;
 
-#define debug 1
+#define debug 0
 #define ifd if (debug)
 
-vector<int> componente1;
-vector<bool> visited[sz];
+struct UF {
+    vector<int> link, size;
 
-void dfs(int ) {
+    UF(int n) {
+        link.resize(n);
+        size.resize(n);
+        forn(i,n) link[i] = i;
+        forn(i,n) size[i] = 1;
+    }
 
-}
+    int find(int x) {
+        while (x != link[x]) x = link[x];
+        return x;
+    }
+
+    bool same(int a, int b) {
+        return (find(a) == find(b));
+    }
+
+    bool unite(int a, int b) {
+        a = find(a);
+        b = find(b);
+        if (a == b) return 0;
+        if (size[a] < size[b]) swap(a, b);
+        size[a] += size[b];
+        link[b] = a;
+        return 1;
+    }
+};
 
 int main() {
-
     cin.tie(0);
     ios_base::sync_with_stdio(false);
+    
     int n, m; cin>>n>>m;
 
     map<ll,ll> id;
     vector<ll> v;
-    for (ll i=1; i<=n; i++) {
+    ll maxV = 1;
+    for (ll i = 1; i <= n; i++) {
         ll x; cin>>x;
-        // if (x>n) continue;
-        id[i]=x;
-        v.push_back(x);
+        maxV = max(maxV,x);
+        id[i] = x;
     }
-    sort(v.begin(), v.end());
-    ll k = 1;
-    for (ll i=1; i<n; i++) {
-        if (v[i]!=(v[i-1]+1)) break;
-        k=v[i];
-    }
-    // ifd cout<<"k = "<<k<<endl;
+
+    UF uf(n+1);
     vector<ll> adj[sz];
-
-    forn(i,m ) {
-        ll a, b; cin>>a>>b;
-        adj[id[a]].push_back(id[b]);
-        adj[id[b]].push_back(id[a]);
+    forn(i,m) {
+        ll a, b; cin>>a>>b;        
+        ll aa = min(id[a], id[b]), bb = max(id[a], id[b]);
+        adj[bb].push_back(aa);
     }
-    bitset<sz> seen;
 
-    seen[1]=true;
-    queue<ll> q;
-    q.push(1);
-    while (!q.empty()) {
-        ll x = q.front(); q.pop();
-        for (auto u:adj[x]) {
-            if (seen[u]||u>k) continue;
-            seen[u]=true;
-            q.push(u);
+    ll ans = 1;
+    ll cnt = 0;
+    for (int i = 1; i <= n; i++) {
+        ifd cout<<"estoy en "<<i<<endl;
+        cnt++;
+        for (auto u:adj[i]) {
+            ifd cout<<"vea que tiene a "<<u<<" adyacente"<<endl;
+            cnt -= uf.unite(i, u);
+
         }
+        if (cnt == 1) ans = i;
+        ifd cout<<"cnt = "<<cnt<<endl;
     }
-    ll maxR=1;
-    for (ll i=1; i<=k; i++) {
-        if (!seen[i]) break;
-        maxR=i;
-    }
-    cout<<maxR<<endl;
-
+    cout<<ans<<endl;
+        
     return 0;
 }
