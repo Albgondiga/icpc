@@ -39,42 +39,37 @@ int main() {
     r--;
     c--;
     forn(i,n) candidates.insert(i+1);
-    ifd cout<<"r="<<r<<", c="<<c<<endl;
+
     ll pos1 = r;
     ll pos2 = c;
-    ifd cout<<"candidates.size()="<<candidates.size()<<endl<<endl;
     while (candidates.size() > 2) {
-        ifd {
-            cout<<"Quedan: ";
-            for (auto c : candidates) cout<<c<<" ";
-            cout<<endl;
-        }
-
         pos1 %= candidates.size();
         pos2 %= candidates.size();
-        
-        ifd cout<<"pos1 = "<<pos1<<", pos2 = "<<pos2<<endl;
-
         auto s1 = candidates.find_by_order(pos1);
         auto s2 = candidates.find_by_order(candidates.size()-pos2-1);
         
-        ifd cout<<"Despues de moverse s1 esta en "<<*s1<<", s2 esta en "<<*s2<<endl<<endl;
-        
         if (s1 == s2) {
-            hired.push_back(*s1);
-            candidates.erase(s1);
             pos1 += r;
             pos2 += c;
+            hired.push_back(*s1);
+            candidates.erase(s1);
         } else {
+            if (pos1 > candidates.size()-pos2-1) {
+                pos1 += (r-1);
+                pos2 += (c-1);
+            } else {
+                pos1 += r;
+                pos2 += c;      
+            }
             candidates.erase(s1);
             candidates.erase(s2);
-            pos1 += (r-1);
-            pos2 += (c-1);
         }
     }
 
-    if (candidates.size() >= 1) hired.push_back(*candidates.find_by_order(0));
-    if (candidates.size() == 2) hired.push_back(*candidates.find_by_order(1));
+    if (candidates.size() >= 1) {
+        hired.push_back(*candidates.find_by_order(0));
+        if (candidates.size() == 2) hired.push_back(*candidates.find_by_order(1));
+    }
 
     sort(hired.begin(), hired.end());
     for (auto h : hired) cout<<h<<" ";
