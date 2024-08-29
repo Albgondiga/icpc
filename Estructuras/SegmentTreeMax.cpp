@@ -12,7 +12,7 @@ class SegmentTree {
  
         SegmentTree(vector<ll> a) {
             n = a.size();
-            st.assign(n*2,0);
+            st.assign(n*4,0);
             build(a,1,0,n-1);
         }
 

@@ -84,9 +84,16 @@ int main() {
     forn(i,n) cin>>v[i];
     SegmentTree st(v);
     while (q--) {
-        ll l, r; cin>>l>>r;
-        l--; r--;
-        cout<<st.query(l,r)<<"\n";
+        ll type; cin>>type;
+        if (type == 1) {
+            ll k, u; cin>>k>>u;
+            k--;
+            st.update(1,0,n-1,k,u);
+        } else {
+            ll a, b; cin>>a>>b;
+            a--; b--;
+            cout<<st.query(a,b)<<"\n";
+        }
     }
 
     return 0;
