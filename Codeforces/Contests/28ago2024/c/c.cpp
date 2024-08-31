@@ -26,19 +26,23 @@ using namespace __gnu_pbds;
 #define debug 0
 #define ifd if (debug)
 
-vector<int> pi;
-
-void prefixFunction(string s) {
-    int n = (int)s.length();
-    pi.assign(n,0);
+vector<int> z_function(string s) {
+    int n = s.size();
+    vector<int> z(n);
+    int l = 0, r = 0;
     for(int i = 1; i < n; i++) {
-        int j = pi[i-1];
-        while (j > 0 && (s[i] != s[j]))
-            j = pi[j-1];
-        if (s[i] == s[j])
-            j++;
-        pi[i] = j;
+        if(i < r) {
+            z[i] = min(r - i, z[i - l]);
+        }
+        while(i + z[i] < n && s[z[i]] == s[i + z[i]]) {
+            z[i]++;
+        }
+        if(i + z[i] > r) {
+            l = i;
+            r = i + z[i];
+        }
     }
+    return z;
 }
 
 int main() {
@@ -47,20 +51,26 @@ int main() {
 
     string t; cin>>t;
     int n = t.size();
-    prefixFunction(t);
 
-    ifd for (auto i : pi) cout<<i<<" ";
+    vector<int> z = z_function(t);
+
+    ifd for (auto i : z) cout<<i<<" ";
     ifd cout<<endl;
 
     int ans = 0;
     for (int i = 1; i < n; i++) {
-        if (pi[i] > ans) {
-            if ((pi[i]-1 >= i-pi[i]+1))
-                ans = pi[i];
+        if (z[i] > ans) {
+            ifd cout<<"i = "<<i<<endl;
+            ifd cout<<"z[i] = "<<z[i]<<endl;
+            ifd cout<<"n-i = "<<n-i<<endl;
+            // Overlap: i <= z[i]-1
+            // Till the end: z[i] == n-i+1
+            if ((i <= z[i]-1) && (z[i] == n-i)) {
+                ans = z[i];
+                break;
+            }
         }
     }
-
-    ifd cout<<ans<<endl;
 
     if (ans) {
         cout<<"YES\n";
