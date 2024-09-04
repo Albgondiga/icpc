@@ -1,4 +1,3 @@
-// 
 #include <bits/stdc++.h>
 using namespace std; 
 #define forr(i, a, b) for (int i=a; i<b; i++)
@@ -23,31 +22,30 @@ const ll MAXP = 1005;
 vector<ll> factoriales(MAXN);
 vector<ll> inv(MAXN);
 ll dp[MAXN][MAXP];
-ll n, m, p1, p2;
+ll m, p1, p2;
 
 ll exp(ll b, ll e) {
     ll r = 1;
     while (e) {
-        if (e % 2) r = r*b % MOD;
-        b = b*b % MOD;
+        if (e % 2) r = (r*b) % MOD;
+        b = (b*b) % MOD;
         e /= 2; 
     }
     return r;
 }
 
 ll Binom(ll n, ll k) {
-    if (k==0) return 1;
-    return (factoriales[n] * inv[k] % MOD * inv[n-k] % MOD);
+    if (k == 0) return 1;
+    return (((factoriales[n] * inv[k]) % MOD * inv[n-k]) % MOD);
 }
 
 // Numero de maneras de hacer j puntos en i rondas, haciendo
 // entre 1 y M puntos en cada una
 ll f(ll i, ll j) {
-    if (j == 0) return 1;
-    if (j < 0) return 0; 
-    if (i == 1) {
-        if (j <= m) return 1;
-        else return 0;
+    if (j < 0) return 0;
+    if (i == 0) {
+        if (j == 0) return 1;
+        else return 0; 
     }
 
     if (dp[i][j] == -1) {
@@ -66,25 +64,31 @@ int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
+    ll n;
     cin>>n>>m>>p1>>p2;
 
     factoriales[0] = 1;
     for (ll i = 1; i < MAXN; i++) {
-        factoriales[i] = factoriales[i-1] * i % MOD;
+        factoriales[i] = (factoriales[i-1] * i) % MOD;
     }
 
     inv[MAXN-1] = exp(factoriales[MAXN-1], MOD-2);
     for (ll i = MAXN-2; i >= 0; i--) {
-        inv[i] = inv[i+1] * (i+1) % MOD;
+        inv[i] = (inv[i+1] * (i+1)) % MOD;
     }
 
     forn(i, MAXN) forn(j, MAXP) dp[i][j] = -1;
 
     ll ans = 0;
-    for (ll i = 0; i <= n; i++) {
-        ll j = n-i;
-        ans += f(i,p1) * f(j,p2) * Binom(n,i) * Binom(n-i,j);
-        ans %= MOD;
+    for (ll i = 1; i < n; i++) {
+        for (ll j = 1; j <= n-i; j++) {
+            ll x = 1;
+            x *= f(i,p1); x %= MOD;
+            x *= f(j,p2); x %= MOD;
+            x *= Binom(n,i); x %= MOD;
+            x *= Binom(n-i,j); x %= MOD;
+            ans += x;
+        }
     }
 
     cout<<ans<<"\n";
