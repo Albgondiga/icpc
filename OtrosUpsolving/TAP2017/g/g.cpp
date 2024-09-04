@@ -88,6 +88,7 @@ int main() {
             x *= Binom(n,i); x %= MOD;
             x *= Binom(n-i,j); x %= MOD;
             ans += x;
+            ans %= MOD;
         }
     }
 
