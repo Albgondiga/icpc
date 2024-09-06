@@ -20,7 +20,7 @@ const int MAXN=100100;
 
 const int MAX = 1000;
 
-ll A = 0, T = 0, P = 0;
+ll T, A, P;
 int n, m;
 char grid[MAX][MAX];
 bool usado[MAX][MAX];
@@ -29,82 +29,94 @@ bool isValid(int x, int y) {
     return (x >= 0 && x < n && y >= 0 && y < m); 
 }
 
-bool bajar(int x, int y, int cantidad, int siguiente, string& cosos) {
-    if (siguiente == cantidad-1) {
-        if (grid[x][y] == cosos[siguiente]) {
-            usado[x][y] = true;
-            return true;
+bool buscarT(int x, int y) {
+    bool valid = false;
+    if (isValid(x-4,y-1) and isValid(x-4,y+1)) {
+        valid = true;
+        for (int k = 1; k <= 4 && valid; k++) {
+            if (grid[x-k][y] != '#') valid = false;
         }
-        return false;
-    }
-    if (grid[x][y] == cosos[siguiente]) {
-        if (isValid(x+1,y)) {
-            bool seguir = bajar(x+1,y,cantidad,siguiente+1,cosos);
-            if (seguir) {
-                usado[x][y] = true;
-                return true;
-            } else {
-                ifd cout<<"Fallo en "<<x+1<<" "<<y<<endl;
-                ifd cout<<"Yo soy "<<grid[x][y]<<", el otro es "<<grid[x+1][y]<<endl;
-            }
-            return false;
+        if (valid) {
+            if (grid[x-4][y-1] != '#') valid = false;
+            if (grid[x-4][y+1] != '#') valid = false;
         }
-        return false;
     }
+    if (valid) {
+        T++;
+        for (int k = 1; k <= 4 && valid; k++) {
+            usado[x-k][y] = true;
+        }
+        usado[x-4][y-1] = true;
+        usado[x-4][y+1] = true;
+        usado[x][y] = true;
+    }
+    if (valid) return true;
     return false;
 }
 
-bool buscarT(int x, int y) {
-    string s = "####";
-    if (bajar(x+1,y,4,0,s)) {
-        usado[x][y] = true;
-        usado[x][y-1] = true;
-        usado[x][y+1] = true;
-        T++;
-        return true;
-    }
-    return false;
-}
 bool buscarA(int x, int y) {
-    string s1 = "####";
-    string s2 = ".#..";
-    if (bajar(x+1,y-1,4,0,s1) && bajar(x+1,y,4,0,s2) &&
-            bajar(x+1,y+1,4,0,s1)) {
-        usado[x][y] = true;
-        usado[x][y-1] = true;
-        usado[x][y+1] = true;
-        A++;
-        return true;
-    } else {
-        for(int i = 1; i <= 4; i++) {
-            if (isValid(x+i,y)) usado[x+i][y] = false;
-            if (isValid(x+i,y-1)) usado[x+i][y-1] = false;
-            if (isValid(x+i,y+1)) usado[x+i][y+1] = false;
+    bool valid = false;
+    if (isValid(x-4,y-2)) {
+        valid = true;
+        for (int k = 1; k <= 4 && valid; k++) {
+            if (grid[x-k][y] != '#') valid = false;
+            if (grid[x-k][y-2] != '#') valid = false;
+        }
+        if (valid) {
+            if (grid[x-4][y-1] != '#') valid = false;
+            if (grid[x-2][y-1] != '#') valid = false;
+            if (grid[x][y-2] != '#') valid = false;
         }
     }
+    if (valid) {
+        A++;
+        for (int k = 1; k <= 4 && valid; k++) {
+            usado[x-k][y] = true;
+            usado[x-k][y-2] = true;
+        }
+        usado[x-4][y-1] = true;
+        usado[x-2][y-1] = true;
+        usado[x][y] = true;
+        usado[x][y-2] = true;
+    }
+    if (valid) return true;
     return false;
 }
+
 bool buscarP(int x, int y) {
-    ifd cout<<"Buscar P en"<<x<<" "<<y<<endl;
-    string s1 = "####";
-    string s2 = ".#";
-    string s3 = "##";
-    if (bajar(x+1,y-1,4,0,s1) && bajar(x+1,y,2,0,s2)
-            && bajar(x+1,y+1,2,0,s3)) {
-        usado[x][y] = true;
-        usado[x][y-1] = true;
-        usado[x][y+1] = true;
-        P++;
-        return true;
-    } else {
-        for(int i = 1; i <= 4; i++) {
-            if (isValid(x+i,y-1)) usado[x+i][y-1] = false;
-            if (isValid(x+i,y+1)) usado[x+i][y+1] = false;
-        }
-        for(int i = 1; i <= 2; i++) {
-            if (isValid(x+i,y)) usado[x+i][y] = false;
+    bool valid = false;
+    if (isValid(x-4,y+2)) {
+        valid = true;
+        for (int k = 1; k <= 4 && valid; k++) {
+            if (grid[x-k][y] != '#') valid = false;
+            if (k == 2) {
+                if (grid[x-k][y+1] != '#') valid = false;
+                if (grid[x-k][y+2] != '#') valid = false;
+            } else if (k == 3) {
+                if (grid[x-k][y+2] != '#') valid = false;
+            } else if (k == 4) {
+                if (grid[x-k][y+1] != '#') valid = false;
+                if (grid[x-k][y+2] != '#') valid = false;
+            }
         }
     }
+    if (valid) {
+        P++;
+        for (int k = 1; k <= 4 && valid; k++) {
+            usado[x-k][y] = true;
+            if (k == 2) {
+                usado[x-k][y+1] = true;
+                usado[x-k][y+2] = true;
+            } else if (k == 3) {
+                usado[x-k][y+2] = true;
+            } else if (k == 4) {
+                usado[x-k][y+1] = true;
+                usado[x-k][y+2] = true;
+                usado[x][y] = true;
+            }
+        }
+    }
+    if (valid) return true;
     return false;
 }
 
@@ -115,166 +127,34 @@ int main() {
 
     cin>>n>>m;
     forn(x,n) forn(y,m) cin>>grid[x][y];
-
+    T = A = P = 0;
     // APT
-    forn (x,n) {
-        forn (y,m) {
-            if (isValid(x,y-1) && isValid(x,y+1)) {
-                if ((grid[x][y] == '#') && (grid[x][y-1] == '#') && (grid[x][y+1] == '#')) {
-                    if (!usado[x][y] && !usado[x][y-1] && !usado[x][y+1]) {
-                        bool encontrado = buscarA(x,y);
-                        if (!encontrado) encontrado = buscarP(x,y);
-                        if (!encontrado) encontrado = buscarT(x,y);
-                    }
+    for (int x = n-1; x >= 0; x--) {
+        for (int y = m-1; y >= 0; y--) {
+            if (grid[x][y] == '#' and !usado[x][y]) {
+                bool encontrado = buscarP(x,y);
+                ifd if (encontrado) cout<<"Encontre una P en "<<x<<" "<<y<<endl;
+                if (!encontrado) {
+                    encontrado = buscarA(x,y);
+                    ifd if (encontrado) cout<<"Encontre una T en "<<x<<" "<<y<<endl;
+                }
+                if (!encontrado) {
+                    encontrado = buscarT(x,y);
+                    ifd if (encontrado) cout<<"Encontre una A en "<<x<<" "<<y<<endl;
                 }
             }
         }
-    }
-    bool valid = true;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < m; j++) {
-            if (grid[i][j] == '#') {
-                if (!usado[i][j]) valid = false;
-            } 
-            usado[i][j] = false;
-        }
-    }
-    if (valid) {
-        cout<<T<<" "<<A<<" "<<P<<"\n";
-        return 0;
     }
 
-    // PAT
-    T = A = P = 0;
-    forn (x,n) {
-        forn (y,m) {
-            if (isValid(x,y-1) && isValid(x,y+1)) {
-                if ((grid[x][y] == '#') && (grid[x][y-1] == '#') && (grid[x][y+1] == '#')) {
-                    if (!usado[x][y] && !usado[x][y-1] && !usado[x][y+1]) {
-                        bool encontrado = buscarP(x,y);
-                        if (!encontrado) encontrado = buscarA(x,y);
-                        if (!encontrado) encontrado = buscarT(x,y);
-                    }
-                }
+    ifd {
+        forn(i,n) {
+            forn(j,m) {
+                cout<<usado[i][j]<<" ";
             }
+            cout<<endl;
         }
-    }
-    valid = true;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < m; j++) {
-            if (grid[i][j] == '#') {
-                if (!usado[i][j]) valid = false;
-            } 
-            usado[i][j] = false;
-        }
-    }
-    if (valid) {
-        cout<<T<<" "<<A<<" "<<P<<"\n";
-        return 0;
     }
 
-    // ATP
-    T = A = P = 0;
-    forn (x,n) {
-        forn (y,m) {
-            if (isValid(x,y-1) && isValid(x,y+1)) {
-                if ((grid[x][y] == '#') && (grid[x][y-1] == '#') && (grid[x][y+1] == '#')) {
-                    if (!usado[x][y] && !usado[x][y-1] && !usado[x][y+1]) {
-                        bool encontrado = buscarA(x,y);
-                        if (!encontrado) encontrado = buscarT(x,y);
-                        if (!encontrado) encontrado = buscarP(x,y);
-                    }
-                }
-            }
-        }
-    }
-    valid = true;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < m; j++) {
-            if (grid[i][j] == '#') {
-                if (!usado[i][j]) valid = false;
-            } 
-            usado[i][j] = false;
-        }
-    }
-    if (valid) {
-        cout<<T<<" "<<A<<" "<<P<<"\n";
-        return 0;
-    }
-
-    // PTA
-    T = A = P = 0;
-    forn (x,n) {
-        forn (y,m) {
-            if (isValid(x,y-1) && isValid(x,y+1)) {
-                if ((grid[x][y] == '#') && (grid[x][y-1] == '#') && (grid[x][y+1] == '#')) {
-                    if (!usado[x][y] && !usado[x][y-1] && !usado[x][y+1]) {
-                        bool encontrado = buscarP(x,y);
-                        if (!encontrado) encontrado = buscarT(x,y);
-                        if (!encontrado) encontrado = buscarA(x,y);
-                    }
-                }
-            }
-        }
-    }
-    valid = true;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < m; j++) {
-            if (grid[i][j] == '#') {
-                if (!usado[i][j]) valid = false;
-            } 
-            usado[i][j] = false;
-        }
-    }
-    if (valid) {
-        cout<<T<<" "<<A<<" "<<P<<"\n";
-        return 0;
-    }
-
-    // TAP
-    T = A = P = 0;
-    forn (x,n) {
-        forn (y,m) {
-            if (isValid(x,y-1) && isValid(x,y+1)) {
-                if ((grid[x][y] == '#') && (grid[x][y-1] == '#') && (grid[x][y+1] == '#')) {
-                    if (!usado[x][y] && !usado[x][y-1] && !usado[x][y+1]) {
-                        bool encontrado = buscarT(x,y);
-                        if (!encontrado) encontrado = buscarA(x,y);
-                        if (!encontrado) encontrado = buscarP(x,y);
-                    }
-                }
-            }
-        }
-    }
-    valid = true;
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < m; j++) {
-            if (grid[i][j] == '#') {
-                if (!usado[i][j]) valid = false;
-            } 
-            usado[i][j] = false;
-        }
-    }
-    if (valid) {
-        cout<<T<<" "<<A<<" "<<P<<"\n";
-        return 0;
-    }
-
-    // TPA
-    T = A = P = 0;
-    forn (x,n) {
-        forn (y,m) {
-            if (isValid(x,y-1) && isValid(x,y+1)) {
-                if ((grid[x][y] == '#') && (grid[x][y-1] == '#') && (grid[x][y+1] == '#')) {
-                    if (!usado[x][y] && !usado[x][y-1] && !usado[x][y+1]) {
-                        bool encontrado = buscarT(x,y);
-                        if (!encontrado) encontrado = buscarP(x,y);
-                        if (!encontrado) encontrado = buscarA(x,y);
-                    }
-                }
-            }
-        }
-    }
     cout<<T<<" "<<A<<" "<<P<<"\n";
     return 0;
 }
