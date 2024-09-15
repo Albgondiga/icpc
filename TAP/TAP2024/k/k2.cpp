@@ -146,6 +146,15 @@ int main() {
         }
     }
 
+    ifd {
+        forn(i,n) {
+            forn(j,m) {
+                cout<<usado[i][j]<<" ";
+            }
+            cout<<endl;
+        }
+    }
+
     cout<<T<<" "<<A<<" "<<P<<"\n";
     return 0;
 }
