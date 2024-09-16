@@ -16,55 +16,67 @@ typedef pair<string, int> si;
 typedef pair<ll,ll> pll;
 #define dforn(i, n) for (int i=n-1; i>=0; i--)
 #define dprint(v) cout<<#v"="<<v<<endl
- 
+
 #include <ext/pb_ds/assoc_container.hpp> 
 #include <ext/pb_ds/tree_policy.hpp> 
 using namespace __gnu_pbds; 
   
 #define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
- 
+
 #define debug 1
 #define ifd if (debug)
- 
+
 const ll INF = 1e18;
-const int N = 1e5+1;
+const int N = 2501;
 int n, m;
-vector<pair<int,ll>> adj[N];
-ll dist[N];
-bool processed[N];
-map<int,int> papa;
+
+void dfs(int s, bool* visited, vector<vector<int>>& adj) {
+    if (visited[s]) return;
+    visited[s] = true;
+    for (auto u : adj[s]) {
+        dfs(u, visited, adj);
+    }
+}
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
- 
+
     cin>>n>>m;
+    vector<vector<int>> adj(N);
+    vector<vector<int>> adjBackwards(N);
+    vector<tuple<int,int,ll>> edges;
     forn(i,m) {
-        ll a, b, c; cin>>a>>b>>c;
-        adj[a].push_back({b,c});
+        int a, b; ll w;
+        cin>>a>>b>>w;
+        adj[a].push_back(b);
+        adjBackwards[b].push_back(a);
+        edges.push_back({a,b,w*-1});
     }
- 
-    papa[1] = -1;
-    priority_queue<pair<ll,int>> q;
+    
+    // Esto me dice si 1 es parte del ciclo o no
+    bool visited[N] = {0};
+    bool visitedBackwards[N] = {0};
+    dfs(1,visited,adj);
+    dfs(n,visitedBackwards,adjBackwards);
+
+    ll dist[N];
     for (int i = 1; i <= n; i++) dist[i] = INF;
     dist[1] = 0;
-    q.push({0,1});
-    while (!q.empty()) {
-        int a = q.top().second; q.pop();
-        if (processed[a]) continue;
-        processed[a] = true;
-        for (auto u : adj[a]) {
-            int b = u.first; ll c = u.second;
-            if (dist[a]+c < dist[b]) {
-                papa[b] = a;
-                dist[b] = dist[a]+c;
-                q.push({-dist[b],b});
+    bool cycle = 0;
+    for (int i = 1; i <= n; i++) {
+        for (auto e : edges) {
+            int a, b; ll w;
+            tie(a,b,w) = e;
+            if (dist[a]+w < dist[b]) {
+                if (i == n and visited[a] and visitedBackwards[a]) cycle = 1;
+                else dist[b] = dist[a]+w;
             }
         }
     }
- 
+
+    if (cycle) cout<<-1<<"\n";
+    else cout<<dist[n]*-1<<"\n";
     
-    cout<<dist[n]<<"\n";
- 
     return 0;
 }
