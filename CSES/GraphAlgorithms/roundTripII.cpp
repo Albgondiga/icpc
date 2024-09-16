@@ -28,26 +28,50 @@ using namespace __gnu_pbds;
 
 const int N = 1e5+1;
 int n, m;
-bool visited[N];
+vector<char> color;
+vector<int> parent;
 vector<int> adj[N];
-deque<int> path;
+int first, last;
 
-
-bool dfs(int a, int parent) {
-    visited[a] = true;
-    path.push_back(a);
-    for (auto b : adj[a]) {
-        if (visited[b]) {
-            if (parent != b) {
-                path.push_back(b);
-                return true;
-            } 
-        } else {
-            if (dfs(b, a)) return true;
+bool dfs(int v) {
+    color[v] = 1;
+    for (int u : adj[v]) {
+        if (color[u] == 0) {
+            parent[u] = v;
+            if (dfs(u)) return true;
+        } else if (color[u] == 1) {
+            last = v;
+            first = u;
+            return true;
         }
     }
-    path.pop_back();
+    color[v] = 2;
     return false;
+}
+
+void findCycle() {
+    color.assign(N,0);
+    parent.assign(N,-1);
+    first = -1;
+
+    for (int v = 1; v <= n; v++) {
+        if (color[v] == 0 and dfs(v)) break;
+    }
+
+    if (first == -1) {
+        cout<<"IMPOSSIBLE\n";
+    } else {
+        vector<int> cycle;
+        cycle.push_back(first);
+        for (int v = last; v != first; v = parent[v])
+            cycle.push_back(v);
+        cycle.push_back(first);
+        reverse(cycle.begin(), cycle.end());
+
+        cout<<cycle.size()<<"\n";
+        for (auto v : cycle) cout<<v<<" ";
+        cout<<"\n";
+    }
 }
 
 int main() {
@@ -60,23 +84,7 @@ int main() {
         adj[a].push_back(b);
     }
 
-    for (int i = 1; i <= n; i++) {
-        if (!visited[i]) {
-            if (dfs(i, -1)) {
-                while (!path.empty() and (path.front() != path.back()))
-                    path.pop_front();
-                cout<<path.size()<<"\n";
-                while (!path.empty()) {
-                    cout<<path.front()<<" ";
-                    path.pop_front();
-                }
-                cout<<"\n";
-                return 0;
-            }
-        }
-    }
-
-    cout<<"IMPOSSIBLE\n";
+    findCycle();
 
     return 0;
 }
