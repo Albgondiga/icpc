@@ -27,8 +27,9 @@ using namespace __gnu_pbds;
 #define ifd if (debug)
 
 const ll INF = 1e18; 
-const ll N = 501;
+const ll N = 101;
 ll n, m;
+ll costs[N];
 ll capacity[N][N] = {0};
 vector<ll> adj[N];
 
@@ -78,7 +79,6 @@ ll maxflow(ll s, ll t) {
     return flow;
 }
 
-// Perform a BFS to mark all nodes reachable from source in the residual graph
 bool visited[N];
 void dfs(ll v) {
     if (visited[v]) return;
@@ -102,24 +102,30 @@ int main() {
         adj[b].push_back(a);
         capacity[a][b] = capacity[b][a] = 1;
     }
+    for (int i = 1; i <= n; i++) {
+        cin>>costs[i];
+    }
 
     maxflow(1,n);
     dfs(1);
 
-    vector<ii> ans;
+    ll cost = 0;
+    vector<int> ans;
     for (int v = 1; v <= n; v++) {
         for (auto u : adj[v]) {
             if (visited[v] and !visited[u] and capacity[v][u] == 0) {
-                ans.push_back({v,u});
+                ans.push_back(u);
+                cost += costs[u];
             }
         }
     }
 
+    cout<<cost<<"\n";
     cout<<ans.size()<<"\n";
     for (auto i : ans) {
-        cout<<i.first<<" "<<i.second<<"\n";
+        cout<<i<<" ";
     }
+    cout<<"\n";
     
-
     return 0;
 }
