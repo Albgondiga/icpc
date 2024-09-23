@@ -16,54 +16,70 @@ typedef pair<string, int> si;
 typedef pair<ll,ll> pll;
 #define dforn(i, n) for (int i=n-1; i>=0; i--)
 #define dprint(v) cout<<#v"="<<v<<endl
-const int MAXN=100100;
+
+#include <ext/pb_ds/assoc_container.hpp> 
+#include <ext/pb_ds/tree_policy.hpp> 
+using namespace __gnu_pbds; 
+  
+#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
 
 #define debug 1
 #define ifd if (debug)
 
-const int MAX = 1e3 + 5;
+const int N = 1001;
+int t, a, b;
+vector<int> factors[N];
 
-vector <int> factor[MAX];
-int s, t, d[MAX];
+void factorizar(vector<int>& fact, const int n) {
+    int n2 = n;
+    for (int d = 2; d*d <= n2; d++) {
+        if (n2 % d == 0) fact.push_back(d);
+        while (n2 % d == 0) {
+            n2 /= d;
+        }
+    }
+    if (n2 > 1 and n2 != n) fact.push_back(n2);
+}
 
-void bfs() {
-    memset(d, -1, sizeof d);
-    cin >> s >> t;
+int bfs(int n, int m) {
+    if (n == m) return 0;
+    
+    queue<int> q;
+    bool visited[N] = {0};
+    int dist[N] = {0};
+    visited[n] = true;
+    dist[n] = 0;
+    q.push(n);
+    while (!q.empty()) {
+        int s = q.front(); q.pop();
+        for (auto d : factors[s]) {
 
-    d[s] = 0;
-
-    queue <int> q;
-    q.push(s);
-
-    while(!q.empty()) {
-        int x = q.front();
-        q.pop();
-        for(int to : factor[x]) {
-            if(x + to < MAX && d[x + to] == -1) {
-                d[x + to] = d[x] + 1;
-                q.push(x + to);
+            if (s+d == m) return dist[s]+1;
+            
+            else if (s+d < m) {
+                if (visited[s+d]) continue;
+                visited[s+d] = true;
+                dist[s+d] = dist[s]+1;
+                q.push(s+d);
             }
         }
     }
 
-    cout << d[t] << '\n';
+    return -1;
 }
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    for(int i = 2; i < MAX; i++) {
-        if(!factor[i].size())
-            for(int j = 2 * i; j < MAX; j += i)
-                factor[j].push_back(i);
+    for (int n = 1; n <= 1000; n++)
+        factorizar(factors[n], n);
+
+    cin>>t;
+    for (int i = 1; i <= t; i++) {
+        cin>>a>>b;
+        cout<<"Case "<<i<<": "<<bfs(a,b)<<"\n";
     }
 
-    int tc;
-    cin >> tc;
-
-    for(int i = 1; i <= tc; i++) {
-        cout << "Case " << i << ": ";
-        bfs();
-    }
+    return 0;
 }
