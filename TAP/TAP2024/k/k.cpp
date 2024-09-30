@@ -26,100 +26,79 @@ char grid[MAX][MAX];
 bool usado[MAX][MAX];
 
 bool isValid(int i, int j) {
-    return (i >= 0 && i < n && j >= 0 && j < m); 
+    return (i >= 0 and i < n and j >= 0 and j < m); 
 }
 
 bool buscarT(int i, int j) {
-    bool valid = false;
-    if (isValid(i-4,j-1) and isValid(i-4,j+1)) {
-        valid = true;
-        for (int k = 1; k <= 4 && valid; k++) {
-            if (grid[i-k][j] != '#' or usado[i-k][j]) valid = false;
+    if (isValid(i+4,j-2)) {
+        bool valid = true;
+        for (int k = 0; k <= 4 and valid; k++) {
+            if (grid[i+k][j-1] != '#' or usado[i+k][j-1]) valid = false;
         }
+        if (grid[i][j] != '#' or usado[i][j]) valid = false;
+        if (grid[i][j-2] != '#' or usado[i][j-2]) valid = false;
         if (valid) {
-            if (grid[i-4][j-1] != '#' or usado[i-4][j-1]) valid = false;
-            if (grid[i-4][j+1] != '#' or usado[i-4][j+1]) valid = false;
+            T++;
+            for (int k = 0; k <= 4 and valid; k++) {
+                usado[i+k][j-1] = true;
+            }
+            usado[i][j] = true;
+            usado[i][j-2] = true;
+            return true;
         }
-    }
-    if (valid) {
-        T++;
-        for (int k = 1; k <= 4 && valid; k++) {
-            usado[i-k][j] = true;
-        }
-        usado[i-4][j-1] = true;
-        usado[i-4][j+1] = true;
-        usado[i][j] = true;
-        return true;
+        return false;
     }
     return false;
 }
 
 bool buscarA(int i, int j) {
-    bool valid = false;
     if (isValid(i-4,j-2)) {
-        valid = true;
-        for (int k = 1; k <= 4 && valid; k++) {
+        bool valid = true;
+        for (int k = 0; k <= 4 and valid; k++) {
             if (grid[i-k][j] != '#' or usado[i-k][j]) valid = false;
             if (grid[i-k][j-2] != '#' or usado[i-k][j-2]) valid = false;
         }
+        if (grid[i-4][j-1] != '#' or usado[i-4][j-1]) valid = false;
+        if (grid[i-2][j-1] != '#' or usado[i-2][j-1]) valid = false;
         if (valid) {
-            if (grid[i-4][j-1] != '#' or usado[i-4][j-1]) valid = false;
-            if (grid[i-3][j-1] != '.' or usado[i-3][j-1]) valid = false;
-            if (grid[i-2][j-1] != '#' or usado[i-2][j-1]) valid = false;
-            if (grid[i-1][j-1] != '.' or usado[i-1][j-1]) valid = false;
-            if (grid[i][j-1] != '.' or usado[i][j-1]) valid = false;
-            if (grid[i][j-2] != '#' or usado[i][j-2]) valid = false;
+            A++;
+            for (int k = 0; k <= 4 and valid; k++) {
+                usado[i-k][j] = true;
+                usado[i-k][j-2] = true;
+            }
+            usado[i-4][j-1] = true;
+            usado[i-2][j-1] = true;
+            return true;
         }
-    }
-    if (valid) {
-        A++;
-        for (int k = 1; k <= 4 && valid; k++) {
-            usado[i-k][j] = true;
-            usado[i-k][j-2] = true;
-        }
-        usado[i-4][j-1] = true;
-        usado[i-2][j-1] = true;
-        usado[i][j] = true;
-        usado[i][j-2] = true;
-        return true;
+        return false;
     }
     return false;
 }
 
 bool buscarP(int i, int j) {
-    bool valid = false;
-    if (isValid(i-4,j+2)) {
-        valid = true;
-        for (int k = 1; k <= 4 && valid; k++) {
+    if (isValid(i-2,j-2) and isValid(i+2,j-2)) {
+        bool valid = true;
+        for (int k = 0; k <= 4 and valid; k++) {
+            if (grid[i+2-k][j-2] != '#' or usado[i+2-k][j-2]) valid = false;
+        }
+        for (int k = 0; k <= 2 and valid; k++) {
             if (grid[i-k][j] != '#' or usado[i-k][j]) valid = false;
-            if (k == 2) {
-                if (grid[i-k][j+1] != '#' or usado[i-k][j+1]) valid = false;
-                if (grid[i-k][j+2] != '#' or usado[i-k][j+2]) valid = false;
-            } else if (k == 3) {
-                if (grid[i-k][j+1] != '.' or usado[i-k][j+1]) valid = false;
-                if (grid[i-k][j+2] != '#' or usado[i-k][j+2]) valid = false;
-            } else if (k == 4) {
-                if (grid[i-k][j+1] != '#' or usado[i-k][j+1]) valid = false;
-                if (grid[i-k][j+2] != '#' or usado[i-k][j+2]) valid = false;
-            }
         }
-    }
-    if (valid) {
-        P++;
-        for (int k = 1; k <= 4 && valid; k++) {
-            usado[i-k][j] = true;
-            if (k == 2) {
-                usado[i-k][j+1] = true;
-                usado[i-k][j+2] = true;
-            } else if (k == 3) {
-                usado[i-k][j+2] = true;
-            } else if (k == 4) {
-                usado[i-k][j+1] = true;
-                usado[i-k][j+2] = true;
-                usado[i][j] = true;
+        if (grid[i][j-1] != '#' or usado[i][j-1]) valid = false;
+        if (grid[i-2][j-1] != '#' or usado[i-2][j-1]) valid = false;
+        if (valid) {
+            P++;
+            for (int k = 0; k <= 4 and valid; k++) {
+                usado[i+2-k][j-2] = true;
             }
+            for (int k = 0; k <= 2 and valid; k++) {
+                usado[i-k][j] = true;
+            }
+            usado[i][j-1] = true;
+            usado[i-2][j-1] = true;
+            return true;
         }
-        return true;
+        return false;
     }
     return false;
 }
@@ -135,12 +114,12 @@ int main() {
     for (int j = m-1; j >= 0; j--) {
         for (int i = n-1; i >= 0; i--) {
             if (grid[i][j] == '#' and !usado[i][j]) {
-                bool encontrado = buscarP(i,j);
-                if (!encontrado) {
-                    encontrado = buscarT(i,j);
-                }
+                bool encontrado = buscarT(i,j);
                 if (!encontrado) {
                     encontrado = buscarA(i,j);
+                }
+                if (!encontrado) {
+                    encontrado = buscarP(i,j);
                 }
             }
         }
