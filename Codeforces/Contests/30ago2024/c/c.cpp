@@ -23,43 +23,30 @@ using namespace __gnu_pbds;
   
 #define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
 
-#define debug 0
+#define debug 1
 #define ifd if (debug)
-
-int ask(const string& q) {
-    cout<<"? "<<q<<endl;
-    int x; cin>>x;
-    return x;
-}
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
     int t; cin>>t;
-    int n;
     while (t--) {
-        cin>>n;
-        string password = "", q = "";
-        int ans0, ans1;
-        while (password.size() < n) {
-            if (ask(password+'0')) {
-                password += '0';
-            } else if (ask(password+'1')) {
-                password += '1';
-            } else {
-                break;
-            }
+        int n; ll a, b; cin>>n>>a>>b;
+        if (a < b) swap(a,b);
+        ll arr[n];
+        forn(i,n) cin>>arr[i];
+        sort(arr, arr+n);
+        ll median = arr[n/2];
+        for (int i = 0; i < n/2; i++) {
+            arr[i] += (arr[n/2]-arr[i])/a * a;
+            arr[i] += (arr[n/2]-arr[i])/b * b;
         }
-        while (password.size() < n) {
-            if (ask('0'+password)) {
-                password = '0'+password;
-            } else {
-                password = '1'+password;
-            }
+        for (int i = n/2+1; i < n; i++) {
+            arr[i] -= (arr[i]-arr[n/2])/a * a;
+            arr[i] -= (arr[i]-arr[n/2])/b * b;
         }
-        cout<<"! "<<password<<endl;
+        cout<<arr[n-1]-arr[0]<<"\n";
     }
-
     return 0;
 }

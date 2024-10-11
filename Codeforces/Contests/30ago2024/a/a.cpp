@@ -23,13 +23,15 @@ using namespace __gnu_pbds;
   
 #define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
 
-#define debug 0
+#define debug 1
 #define ifd if (debug)
 
-int ask(const string& q) {
-    cout<<"? "<<q<<endl;
-    int x; cin>>x;
-    return x;
+bool isPrime(int n) {
+    if (n < 2) return false;
+    for (int x = 2; x*x <= n; x++) {
+        if (n % x == 0) return false;
+    }
+    return true;
 }
 
 int main() {
@@ -37,28 +39,15 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     int t; cin>>t;
-    int n;
+    int l, r;
     while (t--) {
-        cin>>n;
-        string password = "", q = "";
-        int ans0, ans1;
-        while (password.size() < n) {
-            if (ask(password+'0')) {
-                password += '0';
-            } else if (ask(password+'1')) {
-                password += '1';
-            } else {
-                break;
-            }
+        cin>>l>>r;
+        int count = 0;
+        int odds = 0;
+        for (int i = l; i <= r; i++) {
+            if (i % 2) odds++;
         }
-        while (password.size() < n) {
-            if (ask('0'+password)) {
-                password = '0'+password;
-            } else {
-                password = '1'+password;
-            }
-        }
-        cout<<"! "<<password<<endl;
+        cout<<odds/2<<"\n";
     }
 
     return 0;

@@ -23,42 +23,32 @@ using namespace __gnu_pbds;
   
 #define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
 
-#define debug 0
+#define debug 1
 #define ifd if (debug)
-
-int ask(const string& q) {
-    cout<<"? "<<q<<endl;
-    int x; cin>>x;
-    return x;
-}
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
     int t; cin>>t;
-    int n;
-    while (t--) {
-        cin>>n;
-        string password = "", q = "";
-        int ans0, ans1;
-        while (password.size() < n) {
-            if (ask(password+'0')) {
-                password += '0';
-            } else if (ask(password+'1')) {
-                password += '1';
-            } else {
-                break;
+    while(t--) {
+        int n, m; cin>>n>>m;
+        ll arr[n];
+        forn(i,n) cin>>arr[i];
+        ll ans = *max_element(arr, arr+n);
+        forn(i,m) {
+            char op; ll l, r;
+            cin>>op>>l>>r;
+            if (l <= ans and ans <= r) {
+                if (op == '+') {
+                    ans++;
+                } else {
+                    ans--;
+                }
             }
+            cout<<ans<<" ";
         }
-        while (password.size() < n) {
-            if (ask('0'+password)) {
-                password = '0'+password;
-            } else {
-                password = '1'+password;
-            }
-        }
-        cout<<"! "<<password<<endl;
+        cout<<"\n";
     }
 
     return 0;
