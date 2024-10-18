@@ -15,7 +15,7 @@ typedef pair<int, int> ii;
 #define dprint(v) cout<<#v"="<<v<<endl
 const int MAXN=100100;
 
-#define debug 0
+#define debug 1
 #define ifd if (debug)
 
 const int N = 1e5+1;
@@ -90,8 +90,8 @@ bool isAncestor(int u, int v) {
 
 // Retorna la arista más pesada desde u a lca(u,v)
 int lca(int u, int v) {
-    //if (isAncestor(u,v)) return u;
-    //if (isAncestor(v,u)) return v;
+    bool subir = true;
+    if (isAncestor(u,v)) subir = false;
     int arista = 0;
     for (int i = LOG; i >= 0; i--) {
         if (!isAncestor(up[u][i],v)) {
@@ -99,8 +99,7 @@ int lca(int u, int v) {
             u = up[u][i];
         }
     }
-    arista = max(arista, maxArista[u][0]);
-    int ancestor = up[u][0];
+    if (subir) arista = max(arista, maxArista[u][0]);
     return arista;
 }
 
