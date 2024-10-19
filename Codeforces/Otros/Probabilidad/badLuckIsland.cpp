@@ -26,41 +26,46 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
+// https://codeforces.com/problemset/problem/540/D
+
 const int N = 101;
 double dp[N][N][N];
 
-// Gana r
-double f1(int r, int s, int p) {
-    ifd cout<<"r = "<<r<<", s = "<<s<<", p = "<<p<<endl;
-    if (r == 0) return dp[r][s][p] = 0;
-    if (s == 0 and p > 0) return dp[r][s][p] = 0;
-    if (p == 0) return dp[r][s][p] = 1;
-    if (dp[r][s][p] == -1) {
-        dp[r][s][p] = 1/3*f1(r-1,s,p) + 1/3*f1(r,s-1,p) + 1/3*f1(r,s,p-1);
-    }
-    return dp[r][s][p];
-}
-// Gana s
-double f2(int r, int s, int p) {
-    if (s == 0) return dp[r][s][p] = 0;
-    if (p == 0 and r > 0) return dp[r][s][p] = 0;
-    if (r == 0) return dp[r][s][p] = 1;
-    if (dp[r][s][p] == -1) {
-        dp[r][s][p] = 1/3*f2(r-1,s,p) + 1/3*f2(r,s-1,p) + 1/3*f2(r,s,p-1);
-    }
-    return dp[r][s][p];
-}
-// Gana p
-double f3(int r, int s, int p) {
-    if (p == 0) return  dp[r][s][p] = 0;
-    if (r == 0 and s > 0) return dp[r][s][p] = 0;
-    if (s == 0) return dp[r][s][p] = 1;
-    if (dp[r][s][p] == -1) {
-        dp[r][s][p] = 1/3*f3(r-1,s,p) + 1/3*f3(r,s-1,p) + 1/3*f3(r,s,p-1);
+double ganaR(int r, int s, int p) {
+    if (r == 0) return dp[r][s][p] = 0.0;
+    if (s == 0 and p > 0) return dp[r][s][p] = 0.0;
+    if (p == 0) return dp[r][s][p] = 1.0;
+    if (dp[r][s][p] == -1.0) {
+        dp[r][s][p] = (double)(r*p)/(r*p+r*s+s*p)*ganaR(r-1,s,p);
+        dp[r][s][p] += (double)(r*s)/(r*p+r*s+s*p)*ganaR(r,s-1,p);
+        dp[r][s][p] += (double)(s*p)/(r*p+r*s+s*p)*ganaR(r,s,p-1);
     }
     return dp[r][s][p];
 }
 
+double ganaS(int r, int s, int p) {
+    if (s == 0) return dp[r][s][p] = 0.0;
+    if (p == 0 and r > 0) return dp[r][s][p] = 0.0;
+    if (r == 0) return dp[r][s][p] = 1.0;
+    if (dp[r][s][p] == -1.0) {
+        dp[r][s][p] = (double)(r*p)/(r*p+r*s+s*p)*ganaS(r-1,s,p);
+        dp[r][s][p] += (double)(r*s)/(r*p+r*s+s*p)*ganaS(r,s-1,p);
+        dp[r][s][p] += (double)(s*p)/(r*p+r*s+s*p)*ganaS(r,s,p-1);
+    }
+    return dp[r][s][p];
+}
+
+double ganaP(int r, int s, int p) {
+    if (p == 0) return  dp[r][s][p] = 0.0;
+    if (r == 0 and s > 0) return dp[r][s][p] = 0.0;
+    if (s == 0) return dp[r][s][p] = 1.0;
+    if (dp[r][s][p] == -1.0) {
+        dp[r][s][p] = (double)(r*p)/(r*p+r*s+s*p)*ganaP(r-1,s,p);
+        dp[r][s][p] += (double)(r*s)/(r*p+r*s+s*p)*ganaP(r,s-1,p);
+        dp[r][s][p] += (double)(s*p)/(r*p+r*s+s*p)*ganaP(r,s,p-1);
+    }
+    return dp[r][s][p];
+}
 
 int main() {
     cin.tie(0);
@@ -69,12 +74,12 @@ int main() {
     int r, s, p; cin>>r>>s>>p;
 
     cout<<setprecision(9)<<fixed;
-    forn(i,N) forn(j,N) forn(k,N) dp[i][j][k] = -1;
-    cout<<f1(r,s,p)<<" ";
-    forn(i,N) forn(j,N) forn(k,N) dp[i][j][k] = -1;
-    cout<<f2(r,s,p)<<" ";
-    forn(i,N) forn(j,N) forn(k,N) dp[i][j][k] = -1;
-    cout<<f3(r,s,p)<<"\n";
+    forn(i,N) forn(j,N) forn(k,N) dp[i][j][k] = -1.0;
+    cout<<ganaR(r,s,p)<<" ";
+    forn(i,N) forn(j,N) forn(k,N) dp[i][j][k] = -1.0;
+    cout<<ganaS(r,s,p)<<" ";
+    forn(i,N) forn(j,N) forn(k,N) dp[i][j][k] = -1.0;
+    cout<<ganaP(r,s,p)<<"\n";
 
     return 0;
 }
