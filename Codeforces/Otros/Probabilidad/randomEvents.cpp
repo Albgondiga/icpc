@@ -44,7 +44,7 @@ int main() {
             for (int i = 1; i <= m; i++) {
                 int r; double p; cin>>r>>p;
             }
-            cout<<setprecision(6)<<1.000000<<"\n";
+            cout<<setprecision(6)<<fixed<<1.000000<<"\n";
         } else {
             double notGood = 0.0;
             bool flag = true;
@@ -60,8 +60,8 @@ int main() {
                     else notGood *= (1.0-p);
                 }
             }
-            if (!found) cout<<setprecision(6)<<0.000000<<"\n";
-            else cout<<setprecision(6)<<1.0-notGood<<"\n";
+            if (!found) cout<<setprecision(6)<<fixed<<0.000000<<"\n";
+            else cout<<setprecision(6)<<fixed<<1.0-notGood<<"\n";
         }
     }
 

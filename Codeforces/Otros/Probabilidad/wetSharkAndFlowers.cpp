@@ -26,16 +26,26 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
-// https://codeforces.com/problemset/problem/453/A
+// https://codeforces.com/contest/621/problem/C
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    int m, n; cin>>m>>n;
-    // n * 1/m * (1+2+...+m) = n*(m+1)/2;
-    double ans = (double)(n*(m+1))/(double)2;
-    cout<<setprecision(4)<<fixed<<ans<<"\n";
+    int n, p; cin>>n>>p;
+    vector<double> prob(n+1);
+    for (int i = 1 ; i <= n; i++) {
+        int l, r; cin>>l>>r;
+        int multiplos = r/p - (l-1)/p;
+        prob[i] = (1.0-(double)multiplos/(double)(r-l+1));
+    }
+
+    double ans = 0.0;
+    for (int i = 1; i <= n-1; i++) {
+        ans += 2000.0*(1.0-prob[i]*prob[i+1]);
+    }
+    ans += 2000.0*(1.0-prob[1]*prob[n]);
+    cout<<setprecision(6)<<fixed<<ans<<"\n";
 
     return 0;
 }

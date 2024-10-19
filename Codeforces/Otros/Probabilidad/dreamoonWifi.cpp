@@ -65,13 +65,13 @@ int main() {
     double ans = 0;
     int a = (s1-s2+k)/2, b = (k-s1+s2)/2;
     if (((s1-s2+k) % 2) or ((k-s1+s2) % 2) or (a > k) or (-b < -k)) {
-        cout<<setprecision(9)<<ans<<"\n";
+        cout<<setprecision(9)<<fixed<<ans<<"\n";
         return 0;
     }
 
     ans = (double)fact(k)/(double)(fact(a)*fact(k-a));
     ans /= (double)exp(2,k);
 
-    cout<<setprecision(9)<<ans<<"\n";
+    cout<<setprecision(9)<<fixed<<ans<<"\n";
     return 0;
 }
