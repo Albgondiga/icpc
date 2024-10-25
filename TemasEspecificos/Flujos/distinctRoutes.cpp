@@ -109,15 +109,45 @@ struct Dinic {
         return f;
     }
 
-    vector<ii> get_matching() {
-        vector<ii> matching;
-        for (int i = 0; i < m; i += 2) {
-            FlowEdge &e = edges[i];
-            if ((e.flow == 1) and (e.v != s) and (e.u != t)) {
-                matching.push_back({e.v, e.u});
+    bool dfsPaths(int v, int index, vector<int>& path, bool* visited) {
+        if (v == t) {
+            return true;
+        }
+        visited[v] = true;
+        path.push_back(v);
+        
+        for (int id : adj[v]) {
+            FlowEdge &e = edges[id];
+            if (e.flow > 0 && !visited[e.u]) {
+                e.flow = 0;
+                if (dfsPaths(e.u, index, path, visited)) {
+                    return true;
+                }
             }
         }
-        return matching;
+
+        path.pop_back();
+        return false;
+    }
+
+    vector<vector<int>> get_paths() {
+        vector<vector<int>> paths;
+        paths.push_back(vector<int>());
+        bool visited[n];
+        for (int i = 0; i < n; i++) visited[i] = false;
+        int index = 0;
+        for (int id : adj[1]) {
+            FlowEdge& e = edges[id];
+            if (e.flow > 0) {
+                e.flow = 0;
+                if (dfsPaths(e.u, index, paths[index], visited)) {
+                    paths.push_back(vector<int>());
+                    index++;
+                }
+                for (int i = 0; i < n; i++) visited[i] = false;
+            }
+        }
+        return paths;
     }
 
 };
@@ -131,16 +161,21 @@ int main() {
     int n, m; cin>>n>>m;
     Dinic dinic = Dinic(n+1, 1, n);
     int a, b;
-    forn(i,m) {
+    for (int i = 0; i < m; i++) {
         cin>>a>>b;
         dinic.add_edge(a,b,1);
     }
 
     ll flow = dinic.flow();
-    vector<ii> ans = dinic.get_matching();
-    cout<<ans.size()<<"\n";
-    for (auto i : ans) {
-        cout<<i.first<<" "<<i.second-n<<"\n";
+    vector<vector<int>> ans = dinic.get_paths();
+    cout<<ans.size()-1<<"\n";
+    for (int i = 0; i < ans.size()-1; i++) {
+        cout<<ans[i].size()+2<<"\n";
+        cout<<1<<" ";
+        for (int j = 0; j < ans[i].size(); j++) {
+            cout<<ans[i][j]<<" ";
+        }
+        cout<<n<<"\n";
     }
 
     return 0;
