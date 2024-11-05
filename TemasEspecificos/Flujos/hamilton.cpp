@@ -104,16 +104,6 @@ int main() {
         }
     }
 
-    ifd {
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= m; j++) {
-                if (A[i][j] == INF) cout<<"- ";
-                else cout<<A[i][j]<<" ";
-            }
-            cout<<endl;
-        }
-    }
-
     vector<ll> p = hungarian();
     vector<ll> ans(MAX);
     for (int j=1; j<=m; ++j)
@@ -121,7 +111,6 @@ int main() {
 
     ll res = 0;
     for (int i = 1; i <= n; i++) {
-        ifd cout<<(i-1)*2+1<<" tiene que ir a "<<ans[i]*2<<"\n";
         res += A[i][ans[i]];
     }
 
