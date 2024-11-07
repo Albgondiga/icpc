@@ -37,24 +37,14 @@ int main() {
         forn(i, n) cin >> a[i];
         sort(a, a+n);
 
-        int i1 = n-3, i2 = n-1;
-        int minZ = i2;
-        while (i1 >= 0) {
-            if (a[i1]+a[i1+1] > a[i2]) {
-                minZ = i2;
-            }
-            i1--; i2--;
+        int l = 0, ans = n - 2;
+        for (int r = 2; r < n; r++) {
+            while ((r-l >= 2) and (a[l]+a[l+1] <= a[r])) 
+                l++;
+            ans = min(ans, n-(r-l+1));
         }
-        i1 = n-3;
-        while ((i1 >= 0) and (a[i1]+a[i1+1] > a[minZ])) {
-            i1--;
-        }
-        ifd cout<<"i1 = "<<i1<<" i2 = "<<i2<<endl;
-        ifd cout<<"La primera suma que no me sirve es "<<a[i1]<<" + "<<a[i1+1]<<" > "<<a[i2]<<endl;
-        int ans = 0;
-        ans += max(0,i1+1);
-        ans += max(0,n-i2-1);
-        cout << ans << '\n';
+
+        cout<<ans<<"\n";
     }
 
     return 0;
