@@ -23,14 +23,30 @@ using namespace __gnu_pbds;
   
 #define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
 
-#define debug 1
+#define debug 0
 #define ifd if (debug)
 
+bool cmp (pll a, pll b) {
+    return (a.first+a.second < b.first+b.second);
+}
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-
+    int t; cin>>t;
+    while (t--) {
+        int n; cin>>n;
+        pll pairs[n];
+        forn(i, n) {
+            int a, b; cin>>a>>b;
+            pairs[i] = {a, b};
+        }
+        sort(pairs, pairs+n, cmp);
+        forn(i,n) {
+            cout<<pairs[i].first<<" "<<pairs[i].second<<" ";
+        }
+        cout<<"\n";
+    }
 
     return 0;
 }
