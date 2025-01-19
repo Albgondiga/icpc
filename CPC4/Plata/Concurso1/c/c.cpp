@@ -40,13 +40,7 @@ vector<int> pF(string s) {
     return pi;
 }
 
-bool check(ll m, ll maxPi, ll k, string& s) {
-    ll count = k/maxPi;
-    if (k % maxPi >= s.length()-maxPi) count++;
-    if (count >= m) return true;
-    return false;
-}
-
+// https://github.com/marioyc/Online-Judge-Solutions/blob/master/SPOJ/Classical/7423%20-%20File%20Recover%20Testing.cpp
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
@@ -54,8 +48,14 @@ int main() {
     while (true) {
         ll k; string s;
         cin>>k>>s;
+
         if (k == -1) return 0;
 
+        ll count = 0;
+        if (s.length() <= k) {
+            
+        }
+        
         if (s.length() > k){
             cout<<0<<'\n';
         } else {
@@ -71,17 +71,6 @@ int main() {
                 cout<<count<<'\n';
             }
         }
-
-        // // ll l = 1, r = k, ans = 0;
-        // // while (l <= r) {
-        // //     ll m = l+(r-l)/2;
-        // //     if (check(m, maxP, k, s)) {
-        // //         ans = m;
-        // //         l = m+1;
-        // //     } else {
-        // //         r = m-1;
-        // //     }
-        // // }
     }
 
     return 0;
