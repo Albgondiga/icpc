@@ -26,11 +26,11 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
-vector<int> pF(string s) {
+vector<ll> pF(string s) {
     int n = (int)s.length();
-    vector<int> pi(n);
+    vector<ll> pi(n);
     for (int i = 1; i < n; i++) {
-        int j = pi[i-1];
+        ll j = pi[i-1];
         while (j > 0 && s[i] != s[j])
             j = pi[j-1];
         if (s[i] == s[j]) 
@@ -40,7 +40,6 @@ vector<int> pF(string s) {
     return pi;
 }
 
-// https://github.com/marioyc/Online-Judge-Solutions/blob/master/SPOJ/Classical/7423%20-%20File%20Recover%20Testing.cpp
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
@@ -51,26 +50,12 @@ int main() {
 
         if (k == -1) return 0;
 
+        vector<ll> pi = pF(s);
         ll count = 0;
         if (s.length() <= k) {
-            
+            count = (k - pi[s.length()-1])/(s.length() - pi[s.length()-1]);
         }
-        
-        if (s.length() > k){
-            cout<<0<<'\n';
-        } else {
-            vector<int> pi = pF(s);
-            auto it = upper_bound(pi.begin(), pi.end(), 0);
-            if (it == pi.end()) {
-                cout<<k/s.length()<<'\n';
-            } else {
-                ll maxP = *upper_bound(pi.begin(), pi.end(), 0);
-                ifd cout<<"maxP: "<<maxP<<'\n';
-                ll length = s.length()-maxP;
-                ll count = k/length;
-                cout<<count<<'\n';
-            }
-        }
+        cout<<count<<"\n";
     }
 
     return 0;
