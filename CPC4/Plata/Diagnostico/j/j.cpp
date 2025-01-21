@@ -1,21 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std; 
-#define forr(i, a, b) for (int i=a; i<b; i++)
 #define forn(i, n) forr(i, 0, n)
-#define sz(c) ((int)c.size())
-#define zero(v) memset(v, 0, sizeof(v))
-#define forall(it, v) for (auto it=v.begin(); it!=v.end(); ++it)
-#define pb push_back
-#define pf push_front
-#define mp make_pair
-#define fst first
-#define snd second
 typedef long long ll;
 typedef pair<int, int> ii;
-typedef pair<string, int> si;
 typedef pair<ll,ll> pll;
-#define dforn(i, n) for (int i=n-1; i>=0; i--)
-#define dprint(v) cout<<#v"="<<v<<endl
 
 #include <ext/pb_ds/assoc_container.hpp> 
 #include <ext/pb_ds/tree_policy.hpp> 
@@ -25,32 +13,95 @@ using namespace __gnu_pbds;
 
 #define debug 1
 #define ifd if (debug)
+ 
+const ll INF = 1e18;
+ 
+struct Data {
+    ll value, index;
+};
+ 
+class SegmentTree {
+    public : 
+        vector<Data> st;
+ 
+        Data make_data(ll value, ll index) {
+            Data d;
+            d.value = value;
+            d.index = index;
+            return d;
+        }
 
-int main() {
+        Data make_data(const Data& a) {
+            Data d;
+            d.value = a.value;
+            d.index = a.index;
+            return d;
+        }
+ 
+        SegmentTree(vector<Data> a) {
+            st.assign(a.size()*4,make_data(0,0));
+            build(a,1,0,a.size()-1);
+        }
+ 
+        Data combine(Data a, Data b) {
+            Data c;
+            if (a.value >= b.value) {
+                c.value = a.value;
+                c.index = a.index;
+            } else {
+                c.value = b.value;
+                c.index = b.index;
+            }
+            return c;
+        }
+ 
+        void build(vector<Data> &a, ll v, ll tl, ll tr) {
+            if(tl == tr) {
+                st[v] = make_data(a[tl]);
+            }
+            else {
+                ll tm = tl+(tr-tl)/2;
+                build(a,2*v,tl,tm);
+                build(a,2*v+1,tm+1,tr);
+                st[v] = combine(st[2*v],st[2*v+1]);
+            }
+        }
+ 
+        Data query(ll v, ll tl, ll tr, ll l, ll r){
+            if(l > r) return make_data(INF, INF);
+            if(tl == l && tr == r) return st[v];
+            ll tm = tl + (tr-tl)/2;
+            return combine(query(2*v,tl,tm,l,min(r,tm)),query(2*v+1,tm+1,tr, max(l,tm+1),r));
+        }
+ 
+        void update(ll v, ll tl, ll tr, ll pos, ll val, ll index){
+            if(tl == tr) {
+                st[v] = make_data(val, index);
+            }
+            else {
+                ll tm = tl+(tr-tl)/2;
+                if(pos<= tm) update(2*v,tl,tm,pos,val);
+                else update(2*v+1,tm+1,tr,pos,val);
+                st[v] = combine(st[2*v],st[2*v+1]);
+            }
+        }
+};
+ 
+int main () {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
-
-    int n, m; cin>>n>>m;
-    vector<ii> h(n);
-    vector<int> r(m);
+    
+    ll n, m; cin>>n>>m;
+    vector<Data> a(n);
     forn(i,n) {
-        int x; cin>>x;
-        h[i] = {x, i+1};
+        ll h; cin>>h;
+        a[i] = {h, i+1};
     }
-    forn(i,m) cin>>r[i];
-
-    sort(h.begin(), h.end());   
-
-    forn(i,m) {
-        auto it = lower_bound(h.begin(), h.end(), r[i]);
-        if (it == h.end()) cout<<0<<" ";
-        else {
-            int index = it - h.begin();
-            cout<<index+1<<" ";
-            h[index].first -= r[i];
-            sort(h.begin(), h.end()); 
-        }
+    SegmentTree st(x);
+    while(q--){
+        cin>>a>>b;
+        a--;
+        st.update(1,0,n-1,a,b);
+        cout<<st.query(1,0,n-1,0,n-1).best<<"\n";
     }
-
-    return 0;
 }
