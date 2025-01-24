@@ -19,7 +19,11 @@ int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
+    int n; cin>>n;
+    vector<int> v(n);
+    forn(i,n) cin>>v[i];
 
+    
 
     return 0;
 }
