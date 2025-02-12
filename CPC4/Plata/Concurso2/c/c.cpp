@@ -15,11 +15,117 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
+const ll MAX = 1e5+1;
+vector<pair<ll,ll>> adj[MAX];
+ll n, lvl[MAX];
+
+const ll LN = 21;
+ll up[MAX][LN+1], dist[MAX][LN+1];
+
+void dfs(ll x, ll p = 0, ll d = 0) {
+    up[x][0] = p, lvl[x] = lvl[p] + 1;
+    dist[x][0] = d; 
+    for(ll i = 1; i <= LN; i++) {
+        up[x][i] = up[up[x][i-1]][i-1];
+        dist[x][i] = dist[x][i-1] + dist[up[x][i-1]][i-1];
+    }
+    for(auto to : adj[x])
+        if(to.first != p)
+            dfs(to.first, x, to.second);
+}
+
+int lca(int u, int v) {
+    if(lvl[u] > lvl[v])
+        swap(u, v);
+    for(int i = LN; i >= 0; i--)
+        if(lvl[v] - (1 << i) >= lvl[u])
+            v = up[v][i];
+    if(u == v)
+        return u;
+    for(int i = LN - 1; i >= 0; i--) {
+        if(up[u][i] != up[v][i]) {
+            u = up[u][i];
+            v = up[v][i];
+        }
+    }
+    return up[u][0];
+}
+
+ll dist_query(ll u, ll v) {
+    if(lvl[u] > lvl[v])
+        swap(u, v);
+
+    ll ans = 0;
+    for(ll i = LN; i >= 0; i--)
+        if(lvl[v] - (1 << i) >= lvl[u]) {
+            ans += dist[v][i];
+            v = up[v][i];
+        }
+    
+    if(u == v)
+        return ans;
+    
+    for(ll i = LN - 1; i >= 0; i--) {
+        if(up[u][i] != up[v][i]) {
+            u = up[u][i];
+            v = up[v][i];
+            ans += dist[u][i] + dist[v][i];
+        }
+    }
+    return ans;
+}
+
+ll kth_query(ll u, ll v, ll k) {
+    k--;
+    ll _lca = lca(u, v);
+    if (lvl[u] - lvl[_lca] <= k) {
+        for(int j = LN - 1; j >= 0; j--) {
+            if(k >= (1 << j)) {
+                u = up[u][j];
+                k -= 1 << j;
+            }
+        }
+        return u;
+    } else {
+        k -= lvl[u] - lvl[_lca];
+        k = lvl[v] - lvl[_lca] - k;
+        for(int j = LN - 1; j >= 0; j--) {
+            if(k >= (1 << j)) {
+                v = up[v][j];
+                k -= 1 << j;
+            }
+        }
+        return v;
+    }
+}
+
+void solve() {
+    cin>>n;
+    for (ll i = 1; i <= n-1; i++) {
+        ll a, b, c; cin>>a>>b>>c;
+        adj[a].push_back({b, c});
+        adj[b].push_back({a, c});
+    }
+    dfs(1);
+    string s;
+    while (cin>>s) {
+        if (s == "DONE") break;
+        ll a, b, k; cin>>a>>b;
+        if (s == "DIST") {
+            cout<<dist_query(a, b)<<'\n';
+        } else {
+            cin>>k;
+            cout<<kth_query(a, b, k)<<'\n';
+        }
+    }
+}
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-
+    int t; cin>>t;
+    while (t--) solve();
 
     return 0;
 }
