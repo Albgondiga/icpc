@@ -23,7 +23,7 @@ using namespace __gnu_pbds;
   
 #define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
 
-#define debug 1
+#define debug 0
 #define ifd if (debug)
 
 const ll MOD = 1e9+7;
@@ -37,16 +37,25 @@ ll dp[N][2];
 #define black 1
 
 ll f(int v, int color) {
-    if (dp[v][color] != -1) return dp[v][color];
-    visited[v] = true;
-    ll count = 1;
-    for (int u : adj[v]) {
-        if (!visited[u]) {
-            count *= f(u, white);
-            count %= MOD;
+    if (dp[v][color] == -1) {
+        ll count = 1;
+        visited[v] = true;
+        for (int u : adj[v]) {
+            if (!visited[u]) {
+                ll sum = f(u, white);
+                sum %= MOD;
+                if (color != black) {
+                    sum += f(u, black);
+                    sum %= MOD;
+                }
+                count *= sum;
+                count %= MOD;
+            }
         }
+        visited[v] = false;
+        dp[v][color] = count;
     }
-    return dp[v][color] = count;
+    return dp[v][color];
 }
 
 int main() {
@@ -54,10 +63,10 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     cin>>n;
-    forn(i,n) {
+    for (int i = 1; i <= n-1; i++) {
         int x, y; cin>>x>>y;
-        adj[x].pb(y);
-        adj[y].pb(x);
+        adj[x].push_back(y);
+        adj[y].push_back(x);
     }
 
     for (int i = 1; i <= n; i++) {
@@ -68,6 +77,7 @@ int main() {
     
     ll count = f(1, white);
     count += f(1, black);
+    count %= MOD;
     cout<<count<<"\n";
 
     return 0;

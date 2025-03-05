@@ -34,11 +34,11 @@ pll mvector(pll a, pll b) {
     return {b.first-a.first, b.second-a.second};
 }
 
-bool overlap(pll a, pll b, pll c, pll d) {
+bool overlap(ll a, ll b, ll c, ll d) {
     if (a > b) swap(a, b);
     if (c > d) swap(c, d);
 
-    return !(b < c || d < a);
+    return max(a, c) <= min(b, d);
 }
 
 int main() {
@@ -63,12 +63,19 @@ int main() {
             pll ca = mvector(c, a); pll da = mvector(d, a);
             pll cb = mvector(c, b); pll db = mvector(d, b);
 
-            if ((cross(ac, bc) * cross(ad, bd) < 0) and
-                (cross(ca, da) * cross(cb, db) < 0)) {
+            ifd cout<<"cross(ac, bc) = "<<cross(ac, bc)<<endl;
+            ifd cout<<"cross(ad, bd) = "<<cross(ad, bd)<<endl;
+            ifd cout<<"cross(ca, da) = "<<cross(ca, da)<<endl;
+            ifd cout<<"cross(cb, db) = "<<cross(cb, db)<<endl;
+            if (
+                ((cross(ac, bc) * cross(ad, bd) < 0) and (cross(ca, da) * cross(cb, db) <= 0)) or
+                ((cross(ac, bc) * cross(ad, bd) <= 0) and (cross(ca, da) * cross(cb, db) < 0))
+            ) {
                 cout<<"YES\n";
             } else {
                 if (cross(ac,bc) == 0 and cross(ad,bd) == 0) {
-                    if (overlap(a,b,c,d)) {
+                    if (overlap(a.first,b.first,c.first,d.first) and
+                            overlap(a.second,b.second,c.second,d.second)) {
                         cout<<"YES\n";
                     } else {
                         cout<<"NO\n";

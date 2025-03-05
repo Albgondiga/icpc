@@ -42,13 +42,11 @@ bool check(ll d) {
         auto i1 = lower_bound(grass.begin(), grass.end(), next, cmp);
         i1--;
         if (i1->second >= next) {
-            ifd cout<<"(1) Voy a poner la vaca en "<<next<<endl;
             cur = next;
             next = cur+d;
         } else {
             i1++;
             if (i1 == grass.end()) return false;
-            ifd cout<<"(2) Voy a poner la vaca en "<<i1->first<<endl;
             cur = i1->first;
             next = cur+d;
         }
@@ -64,16 +62,17 @@ int main() {
     std::ifstream input("socdist.in");
     std::ofstream output("socdist.out");
 
-    cin>>n>>m;
+    input>>n>>m;
     grass.resize(m);
     forn(i,m) {
-        ll a, b; cin>>a>>b;
+        ll a, b; input>>a>>b;
         grass[i] = {a, b};
     }
+    sort(grass.begin(), grass.end());
 
     ll l = 1, r = 1e18, d = 0;
     while (l <= r) {
-        ll m = l+(r-l)/2;
+        ll m = l + (r-l)/2;
         if (check(m)) {
             l = m+1; d = m;
         } else {
@@ -81,7 +80,7 @@ int main() {
         }
     }
 
-    cout<<d<<endl;
+    output<<d<<endl;
     input.close();
     output.close();
 
