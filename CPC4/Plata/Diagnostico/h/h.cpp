@@ -18,7 +18,8 @@ using namespace __gnu_pbds;
 struct node {
     unordered_map<int, int> nxt;
     int tam;
-    node() : tam(0) {}
+    int count;
+    node() : tam(0), count(0) {}
 };
 
 void Add(vector<node>& Trie, string& s) {
