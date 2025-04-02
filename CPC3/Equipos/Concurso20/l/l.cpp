@@ -3,6 +3,7 @@ using namespace std;
 #define forr(i, a, b) for (int i=a; i<b; i++)
 #define forn(i, n) forr(i, 0, n)
 typedef long long ll;
+typedef long double ld;
 typedef pair<int, int> ii;
 typedef pair<ll,ll> pll;
 
@@ -21,12 +22,13 @@ using namespace __gnu_pbds;
 #define speed2 std::get<3>
 
 const ll N = 1e5+1;
-const ll INF = 1e18;
-ll n, m, t;
+const ld INF = 1e18;
+ll n, m;
+ld t;
 
-vector<tuple<ll,ll,ll,ll>> adj[N];
-priority_queue<pair<ll,ll>> q;
-ll dist[N];
+vector<tuple<ll,ld,ld,ld>> adj[N];
+priority_queue<pair<ld,ll>> q;
+ld dist[N];
 bool processed[N];
 
 void dijkstra() {
@@ -41,16 +43,25 @@ void dijkstra() {
         if (processed[a]) continue;
         processed[a] = true;
         for (auto u : adj[a]) {
-            ll b = node(u), w = weight(u), s1 = speed1(u), s2 = speed2(u);
-            
-
-            ll time = w/s1 + t;
-            if (dist[a] % time + w % s1 <= t) time += s1 - w % s1;
-            else time += s2 - w % s2;
-            if (dist[a] + time < dist[b]) {
-                dist[b] = dist[a] + time;
-                q.push({-dist[b], b});
-            }
+            ll b = node(u); ld w = weight(u), s1 = speed1(u), s2 = speed2(u);
+            if (dist[a] >= t) {
+                if (dist[a] + w/s2 < dist[b]) {
+                    dist[b] = dist[a] + w/s2;
+                    q.push({-dist[b], b});
+                }
+            } else if (dist[a] + w/s1 <= t) {
+                if (dist[a] + w/s1 < dist[b]) {
+                    dist[b] = dist[a] + w/s1;
+                    q.push({-dist[b], b});
+                }
+            } else { // dist[a] + w/s1 > t
+                ld dist_s1 = (t-dist[a])*s1;
+                ld dist_s2 = w - dist_s1;
+                if (t + dist_s2/s2 < dist[b]) {
+                    dist[b] = t + dist_s2/s2;
+                    q.push({-dist[b], b});
+                }    
+            }     
         }
     }
 }
@@ -61,13 +72,14 @@ int main() {
     ios_base::sync_with_stdio(false);
 
     cin>>n>>m>>t;
-    for (int i = 0; i < n; i++) {
-        ll x, y, l, v, w; cin>>x>>y>>l>>v>>w;
+    for (int i = 0; i < m; i++) {
+        ll x, y; ld l, v, w; cin>>x>>y>>l>>v>>w;
         adj[x].push_back({y, l, v, w});
         adj[y].push_back({x, l, v, w});
     }
 
     dijkstra();
+    cout<<setprecision(6)<<fixed;
     cout<<dist[n]<<"\n";
 
     return 0;
