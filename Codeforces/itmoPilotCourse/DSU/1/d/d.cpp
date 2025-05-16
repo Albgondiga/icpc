@@ -17,9 +17,9 @@ using namespace __gnu_pbds;
 
 // https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/B
 
-const int N = 3e5+5;
+const int N = 50005;
 
-int link[N], tamano[N], m[N], M[N];
+int link[N], tamano[N];
 
 int find(int a) {
   return link[a] = (link[a] == a ? a : find(link[a]));
@@ -30,36 +30,48 @@ bool same(int a, int b) {
 }
 
 void unite(int a, int b) {
-    a = find(a), b = find(b);
-    if (tamano[a] < tamano[b]) swap(a,b);
-    tamano[a] += tamano[b];
-    m[a] = min(m[a],m[b]);
-    M[a] = max(M[a],M[b]);
-    link[b] = a;
+    if (!same(a,b)) {
+        a = find(a), b = find(b);
+        if (tamano[a] < tamano[b]) swap(a,b);
+        tamano[a] += tamano[b];
+        link[b] = a;
+    }
 }
+
+map<pair<int,int>, bool> petar;
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    int n, q; cin>>n>>q;
+    int n, m, q; cin>>n>>m>>q;
 
     for (int i = 1; i <= n; i++) {
-        m[i] = M[i] = link[i] = i;
+        link[i] = i;
         tamano[i] = 1;
     }
-
-    while (q--) {
+    for (int i = 1; i <= m; i++) {
+        int u, v; cin>>u>>v;
+    }
+    stack<tuple<string,int,int>> ops;
+    for (int i = 1; i <= q; i++) {
+        string s; int u, v; cin>>s>>u>>v;
+        ops.push({s,u,v});
+        petar[{u,v}] = true;
+    }
+    stack<string> ans;
+    while (!ops.empty()) {
         string s; int u, v;
-        cin>>s>>u;
-        if (s[0] == 'u') {
-            cin>>v;
-            if (!same(u,v)) unite(u,v);
+        tie(s,u,v) = ops.top(); ops.pop();
+        if (s[0] == 'a') {
+            if (same(u,v)) ans.push("YES\n");
+            else ans.push("NO\n");
         } else {
-            int p = find(u);
-            cout<<m[p]<<" "<<M[p]<<" "<<tamano[p]<<"\n";
+            unite(u,v);
         }
     }
-
+    while (!ans.empty()) {
+        cout<<ans.top(); ans.pop();
+    }
     return 0;
 }

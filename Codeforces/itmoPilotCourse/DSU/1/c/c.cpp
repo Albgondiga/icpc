@@ -15,14 +15,17 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
-// https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/A
+// https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/B
 
-const int N = 1e5+5;
-int link[N], tamano[N];
+const int N = 2e5+5;
 
-int find(int x) {
-    while (x != link[x]) x = link[x];
-    return x;
+int link[N], r[N], pts[N], sumar[N];
+
+int find(int a) {
+    if (link[a] != a) {
+        link[a] = find(link[a]);
+    }
+    return link[a];
 }
 
 bool same(int a, int b) {
@@ -30,31 +33,46 @@ bool same(int a, int b) {
 }
 
 void unite(int a, int b) {
-    a = find(a), b = find(b);
-    if (tamano[a] < tamano[b]) swap(a,b);
-    tamano[a] += tamano[b];
-    link[b] = a;
+    if (!same(a,b)) {
+        a = find(a), b = find(b);
+        if (r[a] == r[b]) {
+            r[a]++;
+        }
+        if (r[a] > r[b]) {
+            link[b] = a;
+        } else {
+            link[a] = b;
+        }
+    }
+}
+
+void add(int a, int v) {
+    sumar[link[a]] += v;
 }
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    int n, m; cin>>n>>m;
+    int n, q; cin>>n>>q;
 
     for (int i = 1; i <= n; i++) {
         link[i] = i;
-        tamano[i] = 1;
+        r[i] = pts[i] = sumar[i] = 0;
     }
 
-    while (m--) {
+    while (q--) {
         string s; int u, v;
-        cin>>s>>u>>v;
+        cin>>s>>u;
         if (s[0] == 'u') {
+            cin>>v;
             if (!same(u,v)) unite(u,v);
+        } else if (s[0] == 'a') {
+            cin>>v;
+
         } else {
-            if (same(u,v)) cout<<"YES\n";
-            else cout<<"NO\n";
+            int p = find(u);
+
         }
     }
 
