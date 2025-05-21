@@ -25,22 +25,33 @@ int main() {
         vector<ll> v(n);
         for (ll& a : v) cin>>a;
 
-        ll count = 0;
         vector<ll> s(n);
-        s[0] = v[0];
-        ll l = 0, r = 1;
-        if (s[0] >= x) count = l = 1;
-        while (r < n) {
-            s[r] = v[r]+s[r-1];
-            if (s[r]-(l == 0 ? 0 : s[l-1]) >= x) {
-                count++;
-                l++;
+        s[n-1] = v[n-1];
+        for (ll i = n-2; i >= 0; i--) s[i] = v[i]+s[i+1];
+
+        ll mult = 0;
+        if (s[0] < x) {
+            mult = x/s[0];
+            if (x % s[0]) mult++;
+
+            if (mult >= 0 and mult <= k) {
+                s[0] *= mult;
+                for (ll i = 1; i < n; i++) {
+                    s[i] = s[i-1]-v[i-1];
+                }
+            } else {
+                cout<<0<<"\n";
+                continue;
             }
-            r++;
+        }        
+
+        ll count = max((mult-1),0LL) * n;
+        for (ll i = n-1; i >= 0; i--) {
+            if (s[i] >= x) break;
+            count++;
         }
-        count *= k;
-        if (k > 1) count *= (k-1);
-        cout<<count<<"\n";
+        
+        cout<<(n*k - count)<<"\n";
     }
 
     return 0;

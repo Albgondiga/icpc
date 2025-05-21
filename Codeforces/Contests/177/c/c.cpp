@@ -19,7 +19,27 @@ int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
+    int t; cin>>t;
+    while(t--) {
+        int n; cin>>n;
+        vector<int> v(n+1);
+        for (int i = 1; i <= n; i++) {
+            cin>>v[i];
+        }
 
+        set<int> malPuestos;
+        for (int i = 1; i <= n; i++) {
+            int d; cin>>d;
+            int x = v[d];
+            while (true) {
+                if (malPuestos.find(x) != malPuestos.end()) break;
+                malPuestos.insert(x);
+                x = v[x];
+            }
+            cout<<malPuestos.size()<<" ";
+        }
+        cout<<"\n";
+    }
 
     return 0;
 }
