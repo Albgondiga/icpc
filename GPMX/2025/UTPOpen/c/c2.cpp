@@ -15,6 +15,7 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
+const ll N = 1e6;
 vector<ll> digitos(64,0LL);
 
 int msb(ll x) {
@@ -23,22 +24,28 @@ int msb(ll x) {
 
 ll pot(int k) {
     if (k == 0) return 1;
-    return k * pow(2LL,k-1) + 1;
+    return k * (1 << (k-1)) + 1;
 }
 
-ll count(ll x) {
+ll contarUnos(ll x) {
+    if (x == 0) return 0LL;
+    int k = 0; 
+    ll piso = 0, ans = 0; 
+    while (x > 0) {
+        k = msb(x);
+        piso = (x & ~(1<<k));
+        ans += (piso + pot(k));
+        x = piso;
+    }
+
+    return ans;
+}
+
+ll contarDigitos(ll x) {
     if (x == 0) return 0LL;
     int k = msb(x);
-    //ifd cout<<"x = "<<x<<", k = "<<k<<endl;
     ll piso = x-(1<<k);
-    ll unos = (piso + pot(k) + count(piso));
-    ll ans = unos + (k > 0 ? (digitos[k-1]+((piso+1)*(k+1))) : 1LL);
-    ifd {
-        cout<<"VIENE X = "<<x<<endl;
-        cout<<"k = "<<k<<", piso = "<<piso<<", pot(k) = "<<pot(k)<<endl;
-        cout<<"unos = "<<unos<<", digitos = "<<(k > 0 ? (digitos[k-1]+((piso+1)*(k+1))) : 1LL)<<endl;
-        cout<<"x = "<<x<<" retorna "<<ans<<endl;
-    }
+    ll ans = (k > 0 ? (digitos[k-1]+((piso+1)*(k+1))) : 1LL);
     return ans;
 }
 
@@ -49,16 +56,15 @@ int main() {
     digitos[0] = 1;
     for (int k = 1; k < 64; k++) {
         digitos[k] = digitos[k-1]+(pow(2LL,k)*(k+1));
-        //ifd cout<<"digitos["<<k<<"] = "<<digitos[k]<<endl;
     }
 
     int q; cin>>q;
     while (q--) {
         ll l, r; cin>>l>>r;
-        ifd cout<<"NUEVO CASO"<<endl;
-        //ifd cout<<"count(r) = "<<count(r)<<", count(l-1) = "<<count(max(l-1,0LL))<<endl;
-        cout<<count(r)-count(max(l-1,0LL))-r+max(0LL,l-1)<<"\n";
-        ifd cout<<endl;
+        l = max(0LL, l-1);
+        ll countUnos = contarUnos(r)-contarUnos(l);
+        ll countDigitos = contarDigitos(r)-contarDigitos(l);
+        cout<<countUnos+countDigitos-r+l<<"\n";
     }
 
     return 0;
