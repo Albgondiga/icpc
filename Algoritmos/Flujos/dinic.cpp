@@ -1,3 +1,6 @@
+#define all(v) begin(v), end(v)
+#define fore(e,c) for(const auto &e : (c))
+
 struct Dinic{ // O(n^2 * m)
 	int n, src, dst;
 	vector<int> dist, q, work; // dist: distancias desde S, sin ponderar
