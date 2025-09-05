@@ -117,6 +117,16 @@ int idx(string& s) {
     return -1;
 }
 
+string talla(int s) {
+    if (s == S) return "S";
+    if (s == M) return "M";
+    if (s == L) return "L";
+    if (s == XL) return "XL";
+    if (s == XXL) return "XXL";
+    if (s == XXXL) return "XXXL";
+	return "ERROR";
+}
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
@@ -155,8 +165,16 @@ int main() {
         if (t2 != -1) d.add_edge(t2, i+6, INF);
     }
 
-    if (d.max_flow(s, t) == n) cout<<"YES\n";
-    else cout<<"NO\n";
+    if (d.max_flow(s, t) == n) {
+		cout<<"YES\n";
+		vector<string> ans(n);
+		for (int shirt = 0; shirt < 6; shirt++) {
+			for (int i = 0; i < (d.g[shirt]).size(); i++) {
+				if (((d.g[shirt])[i]).f > 0) ans[((d.g[shirt])[i]).to - 6] = talla(shirt);
+			}
+		}
+		for (string& x : ans) cout<<x<<"\n";
+	} else cout<<"NO\n";
 
     return 0;
 }

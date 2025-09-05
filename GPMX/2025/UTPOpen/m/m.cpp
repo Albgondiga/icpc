@@ -31,7 +31,6 @@ struct dsu {
     }
 };
 
-
 vector<dsu> arboles((N+1)/2); 
 vector<tuple<ll,int,int>> edges;
 
