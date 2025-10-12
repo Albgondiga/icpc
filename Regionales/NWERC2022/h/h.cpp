@@ -15,12 +15,13 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
+// https://codeforces.com/gym/104875
+
 vector<vector<int>> adj;
 // maxDepth[v] es la profundidad maxima empezando en v
-vector<ll> maxDepth;
-int n;
-int ans = 0;
+vector<int> maxDepth, target;
 
+// Calculo niveles
 void dfs1(int v, int p = 0) {
     maxDepth[v] = 1;
     for (int& u : adj[v]) {
@@ -30,16 +31,34 @@ void dfs1(int v, int p = 0) {
     }
 }
 
-void dfs2(int v, int p = 0) {
-
+// Calculo targets
+void dfs2(int v, int p = 0, int hermano = -1) {
+    if (v != 1) {
+        // Target es minimo entre mi nivel, el nivel del otro hijo + 1, o el target de mi papa -1
+        target[v] = min(target[p]-1, min(maxDepth[v], (hermano == -1 ? 1 : maxDepth[hermano]+1)));
+    }
+    int n1 = -1, n2 = -1;
+    for (int& u : adj[v]) {
+        if (u == p) continue;
+        if (n1 == -1) n1 = u;
+        else if (n2 == -1) n2 = u;
+    }
+    if (n1 != -1) {
+        dfs2(n1, v, n2);
+        if (v != 1) target[v] = target[n1]+1;
+    }
+    if (n2 != -1) {
+        dfs2(n2, v, n1);
+        if (v != 1) target[v] = max(target[n1], target[n2]+1);
+    }
 }
 
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    cin>>n;
-    adj.resize(n+1), maxDepth.resize(n+1);
+    int n; cin>>n;
+    adj.resize(n+1), maxDepth.resize(n+1), target.resize(n+1);
     for (int i = 0; i < n; i++) {
         int u, v; cin>>u>>v;
         adj[u].push_back(v);
@@ -47,7 +66,10 @@ int main() {
     }
 
     dfs1(1);
-    //for (int i = 1; i <= n; i++) cout<<i<<": "<<maxDepth[i]<<endl;
+    target[1] = maxDepth[1];
+    dfs2(1);
+    int ans = 0;
+    for (int i = 1; i <= n; i++) if (target[i] <= 0) ans++;
     cout<<ans<<"\n";
 
     return 0;
