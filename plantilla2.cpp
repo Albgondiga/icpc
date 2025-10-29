@@ -2,6 +2,13 @@
 using namespace std; 
 #define forr(i, a, b) for (int i=a; i<b; i++)
 #define forn(i, n) forr(i, 0, n)
+#define sz(v) (int(v.size()))
+#define all(v) begin(v), end(v)
+#define pb push_back
+#define pp pop_back
+#define fst first
+#define snd second
+#define fore(e,c) for(const auto &e : (c))
 typedef long long ll;
 typedef pair<int, int> ii;
 typedef pair<ll,ll> pll;
