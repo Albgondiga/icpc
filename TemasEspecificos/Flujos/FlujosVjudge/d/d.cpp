@@ -24,10 +24,6 @@ typedef pair<int,int> pii;
 typedef pair<ll,ll> pll;
 
 const ll MAXN = 110;
-const ll INF = 1e18+100;
-const ll MOD = 1e9+7;
-const ld EPS = 1e-9;
-const ld PI = acosl(-1);
 
 typedef ll tf;          typedef ll tc;
 const tf INFFLOW = 1e9; const tc INFCOST = 1e9;
@@ -95,7 +91,6 @@ struct MCF { // O(n^2 * m^2), no se banca ciclos de costo negativo
 	}
 };
 
-
 int b[MAXN];
 unordered_map<char, int> cant;
 
@@ -105,62 +100,58 @@ unordered_map<char, int> cant;
 //si es distinta.
 //Ponemos un nodo por cada letra del alfabeto, y tiramos la arista (s, letra, cant de esa letra, 0).
 //Si tenemos, por ejemplo, 5 letras 'a', no podemos poner una en la posicion i y otra en n/2-i-1 porque quedaria palindromo.
-//Entonces metemos un nodo v en el medio para kimitar esto, y para cada letra tiramos (letra, v, 1, 0), y para las 2 posiciones
+//Entonces metemos un nodo v en el medio para limitar esto, y para cada letra tiramos (letra, v, 1, 0), y para las 2 posiciones
 //i y n-i-1 tiramos (v, i, 1, costo), con costo 0 si es igual a la que habia ahi originalmente, y b[i] si es distinta.
 //Y para cada posicion i tiramos (i, t, 1, 0).
-void solve()
-{
-    int n; cin >> n;
-    string a; cin >> a;
-	int suma = 0;
-    forn(i, n) cin >> b[i], suma += b[i];
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-    forn(i, n) cant[a[i]] ++;
+	int n; cin>>n;
+    string a; cin>>a;
+	
+	int suma = 0;
+    forn(i,n) {
+		cin>>b[i];
+		suma += b[i];
+	}
+    forn(i, n) cant[a[i]]++;
 
 	MCF net(sz(cant) + n/2*sz(cant) + n + 2);
 	
+	// Cantidad de letras + 
 	int s = sz(cant) + n/2*sz(cant) + n, t = s + 1;
     
 	int u = 0;
-    for(auto [letra, c] : cant)
-    {
+	// Para cada {letra,freq}
+    for(auto [letra, c] : cant) {
+		// Agrego una arista de s al nodo u (nodo de la letra) con flujo = freq y costo 0
         net.add_edge(s, u, 0, c);
-
-		forn(i, n/2)
-		{
-			int v = sz(cant) + n/2*u        +   i;
-			
+		// Para cada pareja de poisiciones
+		forn(i, n/2) {
+			// v es el nodo que que representa la pareja {i,n-i-1}
+			int v = sz(cant) + n/2*u + i;
+			// Agrego una arista de la letra a la pareja de pos con flujo 1
 			net.add_edge(u, v, 0, 1);
-
+			// w es el nodo de la pos
 			int w = sz(cant) + n/2*sz(cant) + 2*i;
-
+			// Agrego una arista de la letra a la pos
+			// Si la letra es igual a lo que hay en el pos, el costo es 0, si no es b[i]
 			net.add_edge(v, w,   letra == a[i]     ? 0 : b[i],     1);
 			net.add_edge(v, w+1, letra == a[n-i-1] ? 0 : b[n-i-1], 1);
 		}
-
-		u ++;
+		u++;
     }
 
-	forn(i, n/2)
-	{
+	// Agrego las aristas de las pos a t
+	forn(i, n/2) {
 		int w = sz(cant) + n/2*sz(cant) + 2*i;
 		net.add_edge(w,   t, 0, 1);
 		net.add_edge(w+1, t, 0, 1);
 	}
 
 	auto [flow, cost] = net.get_flow(s, t);
-	assert(flow == n);
-	cout << suma - cost, nn;
-}
-
-int main(){
-    //freopen("input.txt", "r", stdin);
-    //freopen("output.txt", "w", stdout);
-
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    solve();
+	cout<<suma-cost<<"\n";
     
     return 0;
 }
