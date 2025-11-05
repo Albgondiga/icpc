@@ -1,31 +1,28 @@
 #include <bits/stdc++.h>
-using namespace std;
-
-#define forr(i,a,b) for(int i=int(a);i<int(b);++i)
-#define forn(i,n) forr(i,0,n)
-#define dforr(i,a,b) for(int i=int(b)-1;i>=int(a);--i)
-#define dforn(i,n) dforr(i,0,n)
-#define fore(e,c) for(const auto &e : (c))
-#define db(v) cerr<<#v" = "<<(v)<<'\n'
-#define nn cout<<'\n'
+using namespace std; 
+#define forr(i, a, b) for (int i=a; i<b; i++)
+#define forn(i, n) forr(i, 0, n)
 #define sz(v) (int(v.size()))
 #define all(v) begin(v), end(v)
 #define pb push_back
 #define pp pop_back
 #define fst first
 #define snd second
-
+#define fore(e,c) for(const auto &e : (c))
 typedef long long ll;
-typedef unsigned long long ull;
-typedef long double ld;
-typedef pair<int,int> pii;
+typedef pair<int, int> ii;
 typedef pair<ll,ll> pll;
 
-const ll MAXN = 110;
-const ll INF = 1e18+100;
-const ll MOD = 1e9+7;
-const ld EPS = 1e-9;
-const ld PI = acosl(-1);
+#include <ext/pb_ds/assoc_container.hpp> 
+#include <ext/pb_ds/tree_policy.hpp> 
+using namespace __gnu_pbds; 
+  
+#define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
+
+#define debug 1
+#define ifd if (debug)
+
+const ll INF = 1e18;
 
 typedef ll tf;          typedef ll tc;
 const tf INFFLOW = 1e9; const tc INFCOST = 1e9;
@@ -97,7 +94,16 @@ int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
+	int n; cin>>n;
+	vector<vector<int>> tipo(n, vector<int>(n)), costo(n, vector<int>(n));
 
+	forn(i,n) forn(j,n) {
+		cin>>tipo[i][j];
+	}
+	forn(i,n) forn(j,n) {
+		cin>>costo[i][j];
+		if (costo[i][j] == -1) costo[i][j] = INF;
+	}
 
     return 0;
 }
