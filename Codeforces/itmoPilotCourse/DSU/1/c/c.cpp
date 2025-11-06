@@ -19,13 +19,17 @@ using namespace __gnu_pbds;
 
 const int N = 2e5+5;
 
-int link[N], r[N], pts[N], sumar[N];
+// No podemos actualizar todos los miembros de un conjunto al hacer add
+// Guardamos la diferencia de experiencia entre cada nodo y su representante
+// extra[i] tiene los puntos de i adicionales a los del papa
+// pts[i] tiene los puntos acumulados del grupo del rep i
+int link[N], r[N], extra[N], pts[N];
 
+// Cuando hacemos find, de una vez le sumamos lo que le hemos sumado al grupo
+// Lo que le hemos sumado al grupo esta en el extra del papa
 int find(int a) {
-    if (link[a] != a) {
-        link[a] = find(link[a]);
-    }
-    return link[a];
+    if (link[a] == a) return a;
+    return find(link[a]);
 }
 
 bool same(int a, int b) {
@@ -35,19 +39,20 @@ bool same(int a, int b) {
 void unite(int a, int b) {
     if (!same(a,b)) {
         a = find(a), b = find(b);
-        if (r[a] == r[b]) {
-            r[a]++;
-        }
-        if (r[a] > r[b]) {
-            link[b] = a;
-        } else {
-            link[a] = b;
-        }
+        if (r[a] == r[b]) r[a]++;
+        if (r[a] < r[b]) swap(a,b);
+        link[b] = a;
+        extra[b] = pts[a];
     }
 }
 
 void add(int a, int v) {
-    sumar[link[a]] += v;
+    pts[find(a)] += v;
+}
+
+int get(int a) {
+    if (a == link[a]) return pts[a];
+    else return (pts[a]-extra[a])+get(link[a]);
 }
 
 int main() {
@@ -58,21 +63,20 @@ int main() {
 
     for (int i = 1; i <= n; i++) {
         link[i] = i;
-        r[i] = pts[i] = sumar[i] = 0;
+        r[i] = pts[i] = extra[i] = 0;
     }
 
     while (q--) {
         string s; int u, v;
         cin>>s>>u;
-        if (s[0] == 'u') {
+        if (s[0] == 'j') {
             cin>>v;
-            if (!same(u,v)) unite(u,v);
+            unite(u,v);
         } else if (s[0] == 'a') {
             cin>>v;
-
+            add(u,v);
         } else {
-            int p = find(u);
-
+            cout<<get(u)<<"\n";
         }
     }
 
