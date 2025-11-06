@@ -84,49 +84,101 @@ int main() {
     ios_base::sync_with_stdio(false);
     
 	int n; cin>>n;
-	vector<vector<int>> tipo(n, vector<int>(n)), costo(n, vector<int>(n));
+	vector<vector<ll>> tipo(n*n, vector<ll>(n)), costo(n*n, vector<ll>(n));
 
-    vector<int> candidatos;
+	// Nodo de entrada para {i,j} es el nodo i*n+j
+	// Nodo de salida para {i,j} es el nodo n*n + i*n+j
 
-	forn(i,n) forn(j,n) {
-		cin>>tipo[i][j];
-        if ((tipo[i][j] == 2 or tipo[i][j] == 4) and !(i == 0 and j == 0)) candidatos.push_back(i*n+j);
+	// s siempre es (0,0), t es la decorativa mas abajo y mas a la derecha
+	int s = 0, t = 0;
+	// Para verificar que existe el camino
+	bool possible = true;
+	ii ultima = {-1,-1};
+	forn(i,n) {
+		forn(j,n) {
+			cin>>tipo[i][j];
+			if (tipo[i][j] == 2 or tipo[i][j] == 4) {
+				if (j < ultima.second) possible = false;  // Al bajar tenia que irme a la izquierda, pero no se puede
+				t = n*n + i*n+j;
+				ultima = {i,j};
+			}
+		}
+		
 	}
+
+	// Para minimizar el min cut luego
+	ll singleBest = INF;
 	forn(i,n) forn(j,n) {
 		cin>>costo[i][j];
 		if (costo[i][j] == -1) costo[i][j] = INF;
+		if (tipo[i][j] == 2) singleBest = min(singleBest, costo[i][j]);
+		else if (tipo[i][j] == 0) costo[i][j] = 0;
 	}
 
-    // Dos nodos por cada casilla y uno extra para representar afuera
-    Dinic d(2*n*n+1); 
-    // Los nodos de 0 a n*n-1 son los nodos de entrada, los nodos de n*n a 2*n*n-1 son los de salida, 2*n*n es el ultimo
+	if (not possible) {
+		cout<<"0 0\n";
+		return 0;
+	}
+
+    // Dos nodos por cada casilla
+    Dinic d(2*n*n); 
+    // Los nodos de 0 a n*n-1 son los nodos de entrada, los nodos de n*n a 2*n*n-1 son los de salida
     forn(i,n) forn(j,n) {
         // Agrego la arista intermedia
         ll cap = costo[i][j];
-        if (cap == -1) {
-            if (tipo[i][j] == 0) cap = 0;
-            else cap = INF;
-        }
+		// Arista intermedia
         d.add_edge(i*n + j, n*n + i*n + j, cap); 
         // Agrego las aristas con los adyacentes (nodo de salida a nodo de entrada)
         if (valid(i+1, j, n, n)) d.add_edge(n*n + i*n + j, (i+1)*n + j, INF);
         if (valid(i, j+1, n, n)) d.add_edge(n*n + i*n + j, i*n + (j+1), INF);
     }
 
-    // Busco el mejor candidato a romper y lo guardo
-    int mejor = -1;
-    ll mini = INF;
-    for (int candidato : candidatos) {
-        ll min_cut = d.max_flow(0, candidato);
-        if (min_cut < mini) {
-            mini = min_cut;
-            mejor = candidato;
-        }
-    }
+    ll min_cut = d.max_flow(s,t);
+	min_cut = min(min_cut, singleBest);
 
-    //
-    ll min_cut = d.max_flow(0, candidato);
+	if (min_cut >= INF) {
+		cout<<"-1 -1\n";
+		return 0;
+	} 
 
+	// BFS en el grafo residual (solo aristas donde e.f < e.cap)
+	vector<bool> vis(d.n, false);
+	queue<int> q;
+	q.push(s);
+	vis[s] = true;
+	while (!q.empty()) {
+		int u = q.front(); q.pop();
+		for (auto& e : d.g[u]) {
+			if (!vis[e.to] and e.f < e.cap) { // hay capacidad residual
+				vis[e.to] = true;
+				q.push(e.to);
+			}
+		}
+	}
+
+	/*
+	El min-cut son todas las aristas (u -> v) tales que vis[u] == 1, vis[v] == 0 
+	y la arista está saturada (e.f == e.cap).
+	*/
+	vector<int> cut_edges;
+	for (int u = 0; u < d.n; u++) {
+		if (!vis[u]) continue;
+		for (auto& e : d.g[u]) {
+			if (vis[e.to]) continue;
+			if (e.f == e.cap and e.cap > 0)
+				cut_edges.push_back(u);
+		}
+	}
+
+	vector<ii> ans;
+	for (int x : cut_edges) {
+		ans.push_back({x/n, x%n});
+	}
+
+	cout<<min_cut<<" "<<ans.size()<<"\n";
+	for (const ii& x : ans) {
+		cout<<x.first+1<<" "<<x.second+1<<"\n";
+	}
 
     return 0;
 }
