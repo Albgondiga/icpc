@@ -27,15 +27,17 @@ const ll INF = 1e18;
 struct Dinic{ // O(n^2 * m)
 	int n, src, dst;
 	vector<int> dist, q, work; // dist: distancias desde S, sin ponderar
-	struct edge {int to, rev; ll f, cap;};
+	struct edge {int to, rev; ll f, cap; int id;};
 	vector<vector<edge>> g; vector<ll> dd;
 	Dinic(int n_): n(n_), dist(n_+2), q(n_+2), work(n_+2), g(n_+2), dd(n_+2)
 	               {} // Deja espacio para el min_cap
-	void add_edge(int s, int t, ll cap, ll mincap = 0){
+	void add_edge(int s, int t, ll cap, ll mincap = 0, int id = -1){
 		// assert(0 <= mincap and mincap <= cap);
+		mincap = max(mincap, 0LL);
+		if(mincap>cap){puts("-1");exit(0);}
 		dd[s] += mincap; dd[t] -= mincap;
-		g[s].pb({t, sz(g[t]),   0, cap-mincap});
-		g[t].pb({s, sz(g[s])-1, 0, 0}); // Residual: cap = 0 y flujo < 0
+		g[s].pb({t, sz(g[t]),   0, cap-mincap, id});
+		g[t].pb({s, sz(g[s])-1, 0, 0, -1}); // Residual: cap = 0 y flujo < 0
 	}
 	bool dinic_bfs(){
 		fill(all(dist), -1); dist[src] = 0;
@@ -73,7 +75,20 @@ struct Dinic{ // O(n^2 * m)
 			while(ll delta = dinic_dfs(src, INF)) result += delta;
 		}
 		return result;
-	} // ll max_flow_min_cap() esta en el mcMF
+	}
+	ll max_flow_min_cap(int s, int t){
+		add_edge(t, s, INF);
+		ll w = 0;
+		forn(i, n+1){
+			if     (dd[i] > 0) add_edge(i, n+1,  dd[i]), w += dd[i];
+			else if(dd[i] < 0) add_edge(n, i,   -dd[i]);
+		}
+		ll f = max_flow(n, n+1);
+		if(f != w) return -1;
+		forn(i, n) if(dd[i] != 0) g[i].pp();
+		ll ff = max_flow(s, t); g[s].pp(), g[t].pp();
+		return ff;
+	}
 };
 
 const int N = 26;
@@ -121,25 +136,14 @@ int main() {
     /*
     0 a N-1: letras
     N a N+l-1: pos
-    N+l: mini
-    N+l+1: maxi
-    N+l+2: sumidero
+    N+l: s
+    N+l+1: t
     */
     int s = N+l;       
-    int s2 = N+l+1;  
-    int t = N+l+2; 
-    Dinic d(2+N+l+1);
-    
-    ll sum_min = 0;
-    forn(i,N) sum_min += mini[i];
+    int t = N+l+1; 
+    Dinic d(N+l+2);
 
-    // s → s' (flujo sobrante)
-    d.add_edge(s, s2, max(0LL, l - sum_min));
-
-    forn(i,N) {
-        if (mini[i] > 0) d.add_edge(s, i, mini[i]);
-        if (maxi[i] > mini[i]) d.add_edge(s2, i, maxi[i]-mini[i]);
-    }
+    forn(i,N) d.add_edge(s, i, maxi[i], mini[i]);
 
     // letras → posiciones
     forn(i,N) forn(j,l) {
@@ -156,7 +160,7 @@ int main() {
     forn(j,l)
         d.add_edge(N+j, t, 1);
 
-    ll flow = d.max_flow(s, t);
+    ll flow = d.max_flow_min_cap(s, t);
     string ans(l, '_');
     forn(i,N) {
         for (auto &e : d.g[i]) {
