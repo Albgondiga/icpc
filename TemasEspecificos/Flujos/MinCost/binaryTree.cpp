@@ -16,15 +16,18 @@ typedef pair<ll,ll> pll;
 #include <ext/pb_ds/assoc_container.hpp> 
 #include <ext/pb_ds/tree_policy.hpp> 
 using namespace __gnu_pbds; 
-  
+
 #define ordered_set tree<int, null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update> 
 
 #define debug 1
 #define ifd if (debug)
 
-const ll INF = 1e18;
+typedef long double ld;
+typedef pair<ld, ld> dd;
 
-typedef ll tf;          typedef ll tc;
+const ld INF = 1e18;
+
+typedef ll tf;          typedef ld tc;
 const tf INFFLOW = 1e9; const tc INFCOST = 1e9;
 struct MCF { // O(n^2 * m^2), no se banca ciclos de costo negativo
 	int n;
@@ -90,20 +93,62 @@ struct MCF { // O(n^2 * m^2), no se banca ciclos de costo negativo
 	}
 };
 
+ld dist(dd a, dd b) {
+	return sqrt((a.first-b.first)*(a.first-b.first) + (a.second-b.second)*(a.second-b.second));
+}
+
+bool cmp(dd a, dd b) {
+	if (a.second != b.second) return a.second > b.second;
+	return a.first < b.first;
+}
+
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
 	int n; cin>>n;
-	vector<vector<int>> tipo(n, vector<int>(n)), costo(n, vector<int>(n));
+	vector<dd> puntos;
+	
+	forn(i,n) {
+		int x, y; cin>>x>>y;
+		puntos.push_back({(ld)x,(ld)y});
+	}
+	
+	sort(puntos.begin(), puntos.end(), cmp);
 
-	forn(i,n) forn(j,n) {
-		cin>>tipo[i][j];
+	if (puntos[0].second == puntos[1].second) {
+		cout<<-1<<"\n";
+		return 0;
 	}
-	forn(i,n) forn(j,n) {
-		cin>>costo[i][j];
-		if (costo[i][j] == -1) costo[i][j] = INF;
+
+	// de 0 a n-1 los nodos como papas
+	// de n a 2n-1 los nodos como hijos
+	int s = 2*n, t = 2*n+1;
+	MCF d(2*n+2);
+
+	// Aristas de s a papas
+	forn(i,n) d.add_edge(s, i, 0.0, 2);
+
+	// Aristas de nodos como papas a nodos como hijos
+	for (int i = 0; i < n; i++) {
+		dd a = puntos[i];
+		for (int j = i+1; j < n; j++) {
+			dd b = puntos[j];
+			if (a.second > b.second) d.add_edge(i, n+j, dist(a,b), 1.0);
+		}
 	}
+
+	// Aristas de hijos a t
+	forn(i,n) d.add_edge(n+i, t, 0.0, 1);
+
+	auto ans = d.get_flow(s,t);
+
+	if (ans.first != n-1) {
+		cout<<-1<<"\n";
+		return 0;
+	}
+	
+	cout<<setprecision(6)<<fixed<<ans.second<<"\n";
 
     return 0;
 }
