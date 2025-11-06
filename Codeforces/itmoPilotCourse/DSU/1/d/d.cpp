@@ -15,7 +15,7 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
-// https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/B
+// https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/D
 
 const int N = 50005;
 

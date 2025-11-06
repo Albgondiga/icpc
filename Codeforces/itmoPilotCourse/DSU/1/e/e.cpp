@@ -15,9 +15,14 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
-// https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/C
+// https://codeforces.com/edu/course/2/lesson/7/1/practice/contest/289390/problem/E
 
 const int N = 2e5+5;
+
+// Cual mono esta en mano izq/der
+int monkey[N][2];
+// edge[{i,j}] guarda cuantas aristas hay entre los monos i y j
+map<ii,int> edge;
 
 // No podemos actualizar todos los miembros de un conjunto al hacer add
 // Guardamos la diferencia de experiencia entre cada nodo y su representante
@@ -59,26 +64,23 @@ int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
-    int n, q; cin>>n>>q;
-
+    int n, m; cin>>n>>m;
     for (int i = 1; i <= n; i++) {
-        link[i] = i;
-        r[i] = pts[i] = extra[i] = 0;
+        int l, r; cin>>l>>r;
+        
+        monkey[i][0] = l;
+        monkey[i][1] = l;
+
+        if (l != -1) edge[{min(i,l),max(i,l)}]++;
+        if (r != -1) edge[{min(i,r),max(i,r)}]++;
+    }
+    forn(i,m) {
+        int id, h; cin>>id>>h;
+        int u = id, v = monkey[id][h];
+        edge[{min(u,v),max(u,v)}]--;
+        
     }
 
-    while (q--) {
-        string s; int u, v;
-        cin>>s>>u;
-        if (s[0] == 'j') {
-            cin>>v;
-            unite(u,v);
-        } else if (s[0] == 'a') {
-            cin>>v;
-            add(u,v);
-        } else {
-            cout<<get(u)<<"\n";
-        }
-    }
 
     return 0;
 }
