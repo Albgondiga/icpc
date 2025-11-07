@@ -77,82 +77,50 @@ struct Dinic{ // O(n^2 * m)
 
 };
 
-vector<vector<int>> get_edge_disjoint_paths(Dinic &F, int s, int t) {
-    vector<vector<int>> paths;
-    // Hacemos una copia de los flujos, para poder "consumirlos"
-    vector<vector<int>> used(sz(F.g));
-    for (int i = 0; i < sz(F.g); i++) used[i].assign(sz(F.g[i]), 0);
-
-    while (true) {
-        vector<int> path, parent(sz(F.g), -1), pe(sz(F.g), -1);
-        queue<int> q;
-        q.push(s);
-        parent[s] = s;
-
-        // DFS/BFS sobre aristas con flujo positivo (f > 0)
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
-            if (u == t) break;
-            for (int i = 0; i < sz(F.g[u]); i++) {
-                auto &e = F.g[u][i];
-                if (e.f > 0 && !used[u][i] && parent[e.to] == -1) {
-                    parent[e.to] = u;
-                    pe[e.to] = i;
-                    q.push(e.to);
-                }
-            }
-        }
-
-        if (parent[t] == -1) break; // no queda camino
-
-        // reconstruir camino y marcar aristas como usadas
-        int x = t;
-        while (x != s) {
-            int u = parent[x], i = pe[x];
-            used[u][i] = 1;
-            x = u;
-        }
-
-        // reconstrucción del camino
-        vector<int> path_rev;
-        x = t;
-        while (x != s) {
-            path_rev.pb(x);
-            x = parent[x];
-        }
-        path_rev.pb(s);
-        reverse(all(path_rev));
-        paths.pb(path_rev);
-    }
-
-    return paths;
-}
-
-
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
 
     int n, m; cin>>n>>m;
 
-    Dinic d(2*n+1);
-    int s = 1, t = 2*n;
+    Dinic d(n+1);
+    int s = 1, t = n;
 
     forn(i,m) {
         int u, v; cin>>u>>v;
-        d.add_edge(u,n+v,1);
+        d.add_edge(u,v,1);
     }
 
     ll f = d.max_flow(s,t);
-    
-    vector<vector<int>> paths = get_edge_disjoint_paths(d,s,t);
-
-    cout<<paths.size()<<"\n";
-    for (auto path : paths) {
+    map<ii,bool> vis;
+    cout<<f<<"\n";
+    // Reconstruyo los caminos
+    forn(i,f) {
+        vector<int> path;
+        int u = s;
+        while(u != t){
+            if(u < n) path.push_back(u);
+            for(auto& [v, _, f, __] : d.g[u]){
+                if(f > 0 and !vis[{min(u,v),max(u,v)}]){
+                    f --;
+                    u = v;
+                    vis[{min(u,v),max(u,v)}] = true;
+                    break;
+                }
+            } 
+        }
+        path.push_back(t);
         cout<<path.size()<<"\n";
         for (int x : path) cout<<x<<" ";
         cout<<"\n";
     }
+
+    // cout<<paths.size()<<"\n";
+    // for (auto path : paths) {
+    //     cout<<path.size()<<"\n";
+    //     for (int x : path) cout<<x<<" ";
+    //     cout<<"\n";
+    // }
 
     return 0;
 }
