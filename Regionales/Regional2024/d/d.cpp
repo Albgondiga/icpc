@@ -93,7 +93,7 @@ int main() {
 	Hopcroft h;
 	h.init(100000,100000);
 	
-	// Busco los cliques y pongo el nodo comun como fron
+	// Busco los cliques y pongo el nodo comun como front
 	int nextN = 0, nextM = 0;
 	forn(i,N) forn(j,N) {
 		if (G[i][j] == 1) {
