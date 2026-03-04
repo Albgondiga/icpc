@@ -22,11 +22,11 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
-const int N = 100+1;
+const int N = 100+1, V = 1e3;
+const ll INF = 1e18;
 int n;
 ll w;
 ll peso[N], val[N];
-
 
 int main() {
     cin.tie(0);
@@ -36,20 +36,27 @@ int main() {
     for (int i = 1; i <= n; i++) 
         cin>>peso[i]>>val[i];
 
-    // dp[j] tiene el max val usando los primeros i en cada iter
-    vector<vector<ll>> dp(n+1, vector<ll>(w+1,0));
+    // dp[i][v] tiene el min peso para obtener v usando los primeros i
+    vector<vector<ll>> dp(n+1, vector<ll>(V+1,0));
+    dp[0][0] = 0;
+    for (int v = 1; v <= V; v++) dp[0][v] = INF;
     for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= w; j++) {
-            if (j < peso[i]) dp[i][j] = dp[i-1][j];
-            else 
-                dp[i][j] = max(
-                    dp[i-1][j],
-                    dp[i-1][j-peso[i]] + val[i]
+        for (int v = 0; v <= V; v++) {
+            dp[i][v] = dp[i-1][v];
+            if (v >= val[i] and dp[i-1][v-val[i]] < INF)  
+                dp[i][v] = min(
+                    dp[i-1][v],
+                    dp[i-1][v-val[i]] + peso[i]
                 );
         }
     }
 
-    cout<<dp[n][w]<<"\n";
+    ll ans = 0;
+    for (int v = 0; v <= V; v++) {
+        if (dp[n][v] <= w) ans = v;
+    }
+
+    cout<<ans<<"\n";
 
     return 0;
 }

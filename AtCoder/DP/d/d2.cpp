@@ -27,7 +27,6 @@ int n;
 ll w;
 ll peso[N], val[N];
 
-
 int main() {
     cin.tie(0);
     ios_base::sync_with_stdio(false);
@@ -36,7 +35,7 @@ int main() {
     for (int i = 1; i <= n; i++) 
         cin>>peso[i]>>val[i];
 
-    // dp[j] tiene el max val usando los primeros i en cada iter
+    // dp[i][j] tiene el max val usando los primeros i con peso maximo j
     vector<vector<ll>> dp(n+1, vector<ll>(w+1,0));
     for (int i = 1; i <= n; i++) {
         for (int j = 1; j <= w; j++) {

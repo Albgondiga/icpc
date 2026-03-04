@@ -22,7 +22,8 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
-const int N = 100+1;
+const int N = 100+1, V = 1e3+1;
+const ll INF = 1e18;
 int n;
 ll w;
 ll peso[N], val[N];
@@ -36,15 +37,21 @@ int main() {
     for (int i = 1; i <= n; i++) 
         cin>>peso[i]>>val[i];
 
-    // dp[j] tiene el max val usando los primeros i en cada iter
-    vector<ll> dp(w+1, 0);
+    // dp[v] tiene el min peso para conseguir el valor v
+    vector<ll> dp(V+1, INF);
+    dp[0] = 0;
     for (int i = 1; i <= n; i++) {
-        for (int j = w; j >= peso[i]; j--) {
-            dp[j] = max(dp[j], dp[j-peso[i]] + val[i]); 
+        for (int v = V; v >= val[i]; v--) {
+            if (dp[v-val[i]] == INF) continue;
+            dp[v] = min(dp[v], dp[v-val[i]] + peso[i]); 
         }
     }
 
-    cout<<(*max_element(dp.begin(), dp.end()))<<"\n";
+    int ans = 0;
+    for (int v = 0; v <= V; v++) {
+        if (dp[v] <= w) ans = v;
+    }
+    cout<<ans<<"\n";
 
     return 0;
 }
