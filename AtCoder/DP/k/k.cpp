@@ -30,13 +30,13 @@ int main() {
     vector<int> a(n);
     forn(i,n) cin>>a[i];
 
-    // dp[k] dice si el jugador que sigue tiene estrategia ganadora con k piedras
+    // dp[k] dice si el jugador en turno tiene estrategia ganadora con k piedras
     vector<bool> dp(k+1, false);
     
     for (int i = 1; i <= k; i++) {
         for (int x : a) {
             if (x > i) break;
-            // Si hay un x tal que el otro no puede ganar con i-x entonces gano en i
+            // Si hay un x tal que el otro no puede ganar con i-x, entonces gano en i
             if (dp[i-x] == false) {
                 dp[i] = true;
                 break;
