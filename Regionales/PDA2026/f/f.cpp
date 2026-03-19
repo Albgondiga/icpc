@@ -25,7 +25,9 @@ using namespace __gnu_pbds;
 const int N = 150+1;
 const int DIM = 17;
 
-int n, sig, base;
+// base es tamano de la base, sig es la siguiente bola a colocar
+// k es el siguiente bit de la mascara
+int n, base, sig, k;
 int color[N];
 /*
 Por comodidad la base de la matriz esta en la primera fila 
@@ -37,8 +39,8 @@ Ej: ***
 int m[DIM][DIM];
 
 void moverM() {
-    for (int i = 0; i < base; i++) {
-        for (int j = base; j >= 1; j--) {
+    for (int i = 0; i < k; i++) {
+        for (int j = k+1; j >= 1; j--) {
             m[i][j] = m[i][j-1];
         }
         m[i][0] = 0;
@@ -60,6 +62,7 @@ void diagonal(int bit, int k) {
         }
     } else { // Derecha
         // Note que si pongo a la derecha, la diagonal empieza en (0,k)
+        // donde k es el bit de la mascara en el que estoy
         int i = 0, j = k;
         while (count and sig <= n) {
             m[i][j] = sig;
@@ -73,7 +76,7 @@ void diagonal(int bit, int k) {
 int dfs(int i, int j) {
     int ans = 1;
     int miColor = color[m[i][j]];
-    // Borro el color (vis = true)
+    // Borro el color (equivlente a vis = true)
     m[i][j] = 0;
     // Me fijo a los lados
     if (j > 0 and color[m[i][j-1]] == miColor) ans += dfs(i,j-1);
@@ -88,7 +91,7 @@ int dfs(int i, int j) {
 
 int maxComp() {
     int ans = 0;
-    forn(i,n) forn(j,n) {
+    forn(i,base) forn(j,base) {
         // Despinto el componente de todos los que me encuentro pintados
         if (m[i][j] != 0) {
             ans = max(ans, dfs(i,j));
@@ -111,15 +114,17 @@ int main() {
     int mask = 0, ans = 0;
     while (mask < (1 << base)) {
         // Limpio la matriz
-        forn(i,n) forn(j,n) m[i][j] = 0;
+        // forn(i,n) forn(j,n) m[i][j] = 0;
         // Sig tiene cual bola es la siguiente
         sig = 1;
         // Pongo base bolas en la base
-        forn(k,base) {
+        k = 0;
+        while (k < base) {
             // Si se me acabaron las bolas termino (por ai acaso)
             if (sig > n) break;
             // Pongo la diagonal
             diagonal(mask & (1 << k), k);
+            k++;
         }
         int nuevoAns = maxComp();
         ans = max(ans, nuevoAns);
