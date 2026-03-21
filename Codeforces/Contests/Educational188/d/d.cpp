@@ -22,17 +22,7 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
-int nodos, aristas;
 vector<vector<int>> adj;
-vector<bool> vis;
-
-void dfs(int v) {
-    if (vis[v]) return;
-    nodos++;
-    for (int u : adj[v]) {
-        dfs(v);
-    }
-}
 
 int main() {
     cin.tie(0);
@@ -48,12 +38,31 @@ int main() {
             adj[v].push_back(u);
         }
 
-        vis.assign(n+1, false);
-        for (int i = 1; i <= n; i++) {
-            if (not vis[i]) dfs(i);
-
-        }
-    }
-
+        // Revisar
+		vector<int> color(n+1, -1);
+		int ans = 0;
+		forn(i, n) if (color[i+1] == -1) {
+			queue<int> q;
+			q.push(i+1);
+			color[i+1] = 0;
+			vector<int> tamano(2);
+			bool bipartito = true;
+			while (!q.empty()){
+				int v = q.front();
+				q.pop();
+				++tamano[color[v]];
+				for (int u : adj[v]){
+					if (color[u] == color[v])
+						bipartito = false;
+					else if (color[u] == -1){
+						color[u] = color[v] ^ 1;
+						q.push(u);
+					}
+				}
+			}
+			if (bipartito) ans += max(tamano[0], tamano[1]);
+		}
+		cout<<ans<<'\n';
+	}
     return 0;
 }
