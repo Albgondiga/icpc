@@ -56,7 +56,8 @@ void diagonal(int bit, int k) {
         int i = 0, j = 0;
         while (count and sig <= n) {
             m[i][j] = sig;
-            i += 1, j += 1;
+            i += 1;
+            //j += 1;
             sig++;
             count--;
         }
@@ -76,12 +77,13 @@ void diagonal(int bit, int k) {
 int dfs(int i, int j) {
     int ans = 1;
     int miColor = color[m[i][j]];
-    // Borro el color (equivlente a vis = true)
+    // Borro la bola (equivlente a vis = true)
     m[i][j] = 0;
-    // Me fijo a los lados
-    if (j > 0 and color[m[i][j-1]] == miColor) ans += dfs(i,j-1);
-    if (j < base and color[m[i][j+1]] == miColor) ans += dfs(i,j+1);
-    // Me fijo en los adyacentes de abajo (abajo y abajo a la izquierda)
+    // Reviso todos los adyacentes
+    if (i > 0 and color[m[i-1][j]] == miColor)ans += dfs(i-1, j);
+    if (i > 0 and color[m[i-1][j+1]] == miColor)ans += dfs(i-1, j+1);
+    if (j > 0 and color[m[i][j-1]] == miColor) ans += dfs(i, j-1);
+    if (j < base and color[m[i][j+1]] == miColor) ans += dfs(i, j+1);
     if (i < base) {
         if (color[m[i+1][j]] == miColor) ans += dfs(i+1,j);
         if (j > 0 and color[m[i+1][j-1]] == miColor) ans += dfs(i+1,j-1);
@@ -114,7 +116,7 @@ int main() {
     int mask = 0, ans = 0;
     while (mask < (1 << base)) {
         // Limpio la matriz
-        // forn(i,n) forn(j,n) m[i][j] = 0;
+        //forn(i,base) forn(j,base) m[i][j] = 0;
         // Sig tiene cual bola es la siguiente
         sig = 1;
         // Pongo base bolas en la base
