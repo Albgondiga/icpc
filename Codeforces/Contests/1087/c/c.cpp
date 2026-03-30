@@ -35,7 +35,7 @@ int main() {
 
         // Pregunto por parejas
         // n-1 preguntas
-        for (int i = 1; i+1 <= 2*n-2 and !found; i += 2) {
+        for (int i = 3; i+1 <= 2*n and !found; i += 2) {
             cout<<"? "<<i<<" "<<(i+1)<<endl;
             cin>>ans;
             if (ans == -1) return 0;
