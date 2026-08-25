@@ -22,6 +22,8 @@ using namespace __gnu_pbds;
 #define debug 1
 #define ifd if (debug)
 
+// https://codeforces.com/group/GHvtTrfZFd/contest/706597/problem/C
+
 int n, m, LOG;
 vector<vector<int>> adj;
 
